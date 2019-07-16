@@ -61,3 +61,6 @@ typings/
 .next
 
 .terraform/
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+.vscode/settings.json
