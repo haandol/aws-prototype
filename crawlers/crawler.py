@@ -67,7 +67,7 @@ class GSAgent:
         self.BASE_URL = 'http://www.gsshop.com'
 
     def _fetch(self, today):
-        res = requests.get(self.URL + today, headers=self.headers)
+        res = requests.get(self.URL + today, headers=self.headers, timeout=3)
         return res.content
 
     def _parse(self, content):
@@ -110,7 +110,7 @@ class GSAgent:
                     'shop': product.shop,
                 }
             )
-            if (Product(old['Item']) != product):
+            if 'Item' not in old or (Product(old['Item']) != product):
                 table.put_item(
                     Item=product.to_item(),
                 )
@@ -129,8 +129,7 @@ class DynamoDB:
             return self._resouce
 
         self._resouce = boto3.resource('dynamodb',
-                                      region_name='ap-northeast-2',
-                                      endpoint_url='http://apseonote260:8000')
+                                       region_name='ap-northeast-2')
         return self._resouce
 
     def get_or_create_table(self, table_name):
@@ -151,8 +150,7 @@ class DynamoDB:
                 },
             )
             client = boto3.client('dynamodb',
-                                  region_name='ap-northeast-2',
-                                  endpoint_url='http://apseonote260:8000')
+                                  region_name='ap-northeast-2')
             client.create_table(**params)
             waiter = client.get_watier('table_exists')
             waiter.wait(TableName=table_name)
