@@ -64,3 +64,6 @@ typings/
 terraform/terraform.tfstate
 terraform/terraform.tfstate.backup
 .vscode/settings.json
+
+crawlers/gs
+*.zip
