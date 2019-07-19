@@ -1,6 +1,7 @@
 import re
 import boto3
 import requests
+from botocore.exceptions import ClientError
 from decimal import Decimal
 from datetime import datetime
 from bs4 import BeautifulSoup
@@ -121,16 +122,16 @@ class GSAgent:
 
 class DynamoDB:
     def __init__(self):
-        self._resouce = None
+        self._resource = None
 
     @property
-    def resouce(self):
-        if self._resouce:
-            return self._resouce
+    def resource(self):
+        if self._resource:
+            return self._resource
 
-        self._resouce = boto3.resource('dynamodb',
+        self._resource = boto3.resource('dynamodb',
                                        region_name='ap-northeast-2')
-        return self._resouce
+        return self._resource
 
     def get_or_create_table(self, table_name):
         try:
@@ -152,16 +153,17 @@ class DynamoDB:
             client = boto3.client('dynamodb',
                                   region_name='ap-northeast-2')
             client.create_table(**params)
-            waiter = client.get_watier('table_exists')
+            waiter = client.get_waiter('table_exists')
             waiter.wait(TableName=table_name)
-        except Exception as e:
-            return self.resouce.Table(table_name)
+        except ClientError as e:
+            if e.response['Error']['Code'] != 'ResourceInUseException':
+                raise e
+        return self.resource.Table(table_name)
 
 
-if __name__ == '__main__':
+def handler(event, context):
     agent = GSAgent()
     products = agent.crawl()
     db = DynamoDB()
     updated_product_ids = agent.update_products(db, products)
-    if updated_product_ids:
-        print(len(updated_product_ids))
+    # if updated_product_ids: do something
