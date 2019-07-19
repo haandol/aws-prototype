@@ -4,7 +4,7 @@ resource "aws_lambda_function" "gs_crawler" {
   handler = "crawler.handler"
   runtime = "python3.7"
   filename = "../crawlers/gs_crawler.zip"
-  timeout = 10
+  timeout = 60
   source_code_hash = filebase64sha256("../crawlers/gs_crawler.zip")
 }
 
@@ -44,6 +44,25 @@ resource "aws_iam_role" "lambda_exec_role" {
         "Action": "sts:AssumeRole"
       }
     ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "dynamodb-lambda-policy"{
+  name = "dynamodb_lambda_policy"
+  role = "${aws_iam_role.lambda_exec_role.id}"
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:*"
+      ],
+      "Resource": "${aws_dynamodb_table.product_table.arn}"
+    }
+  ]
 }
 EOF
 }

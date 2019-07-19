@@ -71,7 +71,7 @@ class GSAgent:
         res = requests.get(self.URL + today, headers=self.headers, timeout=3)
         return res.content
 
-    def _parse(self, content):
+    def _parse(self, content, today):
         products = []
         soup = BeautifulSoup(content, 'html.parser')
         items = soup.find_all('article', 'items')
@@ -87,6 +87,7 @@ class GSAgent:
             products.append(Product({
                 'id': '{}-{}'.format(self.shop, item_id),
                 'shop': self.shop,
+                'date': today,
                 'from_at': times[0].strip(),
                 'to_at': times[1].strip(),
                 'img': img,
@@ -99,10 +100,10 @@ class GSAgent:
     def crawl(self):
         today = datetime.now().strftime('%Y%m%d') 
         response = self._fetch(today)
-        return self._parse(response)
+        return self._parse(response, today)
 
     def update_products(self, db, products):
-        table = db.get_or_create_table('Product')
+        table = db.resource.Table('Product')
         updated_products = []
         for product in products:
             old = table.get_item(
@@ -129,36 +130,8 @@ class DynamoDB:
         if self._resource:
             return self._resource
 
-        self._resource = boto3.resource('dynamodb',
-                                       region_name='ap-northeast-2')
+        self._resource = boto3.resource('dynamodb', region_name='ap-northeast-2')
         return self._resource
-
-    def get_or_create_table(self, table_name):
-        try:
-            params = dict(
-                TableName=table_name,
-                KeySchema=[
-                    {'AttributeName': 'id', 'KeyType': 'HASH'},
-                    {'AttributeName': 'shop', 'KeyType': 'RANGE'},
-                ],
-                AttributeDefinitions=[
-                    {'AttributeName': 'id', 'AttributeType': 'S'},
-                    {'AttributeName': 'shop', 'AttributeType': 'S'},
-                ],
-                ProvisionedThroughput={
-                    'ReadCapacityUnits': 10,
-                    'WriteCapacityUnits': 10,
-                },
-            )
-            client = boto3.client('dynamodb',
-                                  region_name='ap-northeast-2')
-            client.create_table(**params)
-            waiter = client.get_waiter('table_exists')
-            waiter.wait(TableName=table_name)
-        except ClientError as e:
-            if e.response['Error']['Code'] != 'ResourceInUseException':
-                raise e
-        return self.resource.Table(table_name)
 
 
 def handler(event, context):
