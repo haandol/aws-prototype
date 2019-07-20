@@ -48,9 +48,9 @@ type Product {
 	date: Int
 	from_at: Int
 	to_at: Int
-  img: string
-  name: string
-  link: string
+  img: String
+  name: String
+  link: String
 	price: Int
 }
 
