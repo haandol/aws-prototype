@@ -52,7 +52,7 @@ type Product {
 
 type Query {
 	product(id: String!, shop: String!): Product
-	products(filter: TableProductFilterInput, limit: Int, nextToken: String): [Product]
+	products(filter: TableProductFilterInput, limit: Int): [Product]
 }
 
 input TableIntFilterInput {
