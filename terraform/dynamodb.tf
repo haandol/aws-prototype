@@ -55,5 +55,4 @@ resource "aws_dynamodb_table" "product_table" {
     read_capacity = 0
     write_capacity = 0
   }
-
 }
