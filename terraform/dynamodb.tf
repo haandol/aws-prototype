@@ -15,6 +15,11 @@ resource "aws_dynamodb_table" "product_table" {
   }
 
   attribute {
+    name = "date"
+    type = "N"
+  }
+
+  attribute {
     name = "from_at"
     type = "N"
   }
@@ -25,10 +30,25 @@ resource "aws_dynamodb_table" "product_table" {
   }
 
   attribute {
-    name = "date"
-    type = "N"
+    name = "img"
+    type = "S"
+  }
+
+  attribute {
+    name = "name"
+    type = "S"
+  }
+
+  attribute {
+    name = "link"
+    type = "S"
   }
   
+  attribute {
+    name = "price"
+    type = "N"
+  }
+
   global_secondary_index {
     hash_key = "id"
     name = "DateIndex"
