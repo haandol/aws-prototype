@@ -52,40 +52,7 @@ type Product {
 
 type Query {
 	product(id: String!, shop: String!): Product
-	products(filter: TableProductFilterInput, limit: Int): [Product]
-}
-
-input TableIntFilterInput {
-	ne: Int
-	eq: Int
-	le: Int
-	lt: Int
-	ge: Int
-	gt: Int
-	contains: Int
-	notContains: Int
-	between: [Int]
-}
-
-input TableProductFilterInput {
-	date: TableIntFilterInput
-	from_at: TableIntFilterInput
-	id: TableStringFilterInput
-	shop: TableStringFilterInput
-	to_at: TableIntFilterInput
-}
-
-input TableStringFilterInput {
-	ne: String
-	eq: String
-	le: String
-	lt: String
-	ge: String
-	gt: String
-	contains: String
-	notContains: String
-	between: [String]
-	beginsWith: String
+	products: [Product]
 }
 
 schema {
