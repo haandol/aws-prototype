@@ -43,15 +43,19 @@ resource "aws_appsync_graphql_api" "product_graphql" {
   name = "product appsync graphql"
   schema = <<EOF
 type Product {
-	date: Int
-	from_at: Int
 	id: String!
 	shop: String!
+	date: Int
+	from_at: Int
 	to_at: Int
+  img: string
+  name: string
+  link: string
+	price: Int
 }
 
 type Query {
-	product(id: String!, shop: String!): Product
+	product(id: String!, shop: String!, date: Int): Product
 	products(filter: TableProductFilterInput): [Product]
 }
 
@@ -68,11 +72,15 @@ input TableIntFilterInput {
 }
 
 input TableProductFilterInput {
+	price: TableIntFilterInput
 	date: TableIntFilterInput
 	from_at: TableIntFilterInput
 	id: TableStringFilterInput
 	shop: TableStringFilterInput
 	to_at: TableIntFilterInput
+	img: TableStringFilterInput
+	name: TableStringFilterInput
+	link: TableStringFilterInput
 }
 
 input TableStringFilterInput {
@@ -96,7 +104,7 @@ EOF
 
 resource "aws_appsync_datasource" "product_datasource" {
   api_id = "${aws_appsync_graphql_api.product_graphql.id}"
-  name = "tf_appsync_example"
+  name = "product appsync datasource"
   service_role_arn = "${aws_iam_role.appsync_role.arn}"
   type = "AMAZON_DYNAMODB"
   dynamodb_config {

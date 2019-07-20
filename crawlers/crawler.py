@@ -139,4 +139,5 @@ def handler(event, context):
     products = agent.crawl()
     db = DynamoDB()
     updated_product_ids = agent.update_products(db, products)
-    # if updated_product_ids: do something
+    if updated_product_ids:
+        pass
