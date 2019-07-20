@@ -67,3 +67,5 @@ terraform/terraform.tfstate.backup
 
 crawlers/gs
 *.zip
+
+apps/*/build/
