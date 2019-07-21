@@ -1,20 +1,35 @@
 {
   "name": "product",
   "version": "1.0.0",
-  "description": "",
-  "main": "./build/index.js",
+  "description": "product service",
+  "main": "build/index.js",
   "scripts": {
+    "build": "tsc",
     "start": "tsc; node ./build/index.js"
   },
-  "author": "",
+  "author": "haandol",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.495.0",
-    "body-parser": "^1.19.0",
-    "express": "^4.17.1",
+    "@types/bcrypt": "^3.0.0",
+    "@types/graphql": "^14.2.2",
+    "@types/jsonwebtoken": "^8.3.2",
+    "@types/lodash": "^4.14.136",
+    "@types/node": "^12.6.8",
+    "@types/restify": "^7.2.12",
+    "@types/restify-cors-middleware": "^1.0.1",
+    "@types/winston": "^2.4.4",
+    "aws-amplify": "^1.1.32",
+    "aws-appsync": "^1.8.1",
+    "aws-sdk": "^2.496.0",
+    "bcrypt": "^3.0.6",
+    "graphql": "^14.4.2",
+    "graphql-tag": "^2.10.1",
     "jsonwebtoken": "^8.5.1",
-    "passport": "^0.4.0",
-    "passport-jwt": "^4.0.0",
-    "passport-local": "^1.0.0"
+    "lodash": "^4.17.15",
+    "restify": "^8.3.3",
+    "restify-cors-middleware": "^1.1.1",
+    "typescript": "^3.5.3",
+    "url": "^0.11.0",
+    "winston": "^3.2.1"
   }
 }

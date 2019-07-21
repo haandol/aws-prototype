@@ -69,3 +69,4 @@ crawlers/gs
 *.zip
 
 apps/*/build/
+terraform/.terraform.tfstate.lock.info

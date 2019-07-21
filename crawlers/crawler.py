@@ -11,6 +11,7 @@ class Product:
     def __init__(self, data):
         self.id = data['id']
         self.shop = data['shop']
+        self.date = int(data['date'])
         self.from_at = self._refine_times(data['from_at'])
         self.to_at = self._refine_times(data['to_at'])
         self.img = data['img']
@@ -38,6 +39,7 @@ class Product:
         return {
             'id': self.id, 
             'shop': self.shop,
+            'date': self.date,
             'from_at': self.from_at, 
             'to_at': self.to_at, 
             'img': self.img, 
@@ -50,7 +52,7 @@ class Product:
         if not isinstance(other, Product):
             return False
         
-        fields = ['id', 'from_at', 'to_at', 'price', 'name', 'link', 'img']
+        fields = ['id', 'date', 'from_at', 'to_at', 'price', 'name', 'link', 'img']
         for field in fields:
             if getattr(self, field) != getattr(other, field):
                 print(getattr(self, field),  getattr(other, field))
