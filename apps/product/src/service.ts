@@ -1,7 +1,6 @@
 import Repository from './repository';
 import { Product } from './interface';
 
-
 class Service {
   repository: Repository;
 

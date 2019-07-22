@@ -1,9 +1,10 @@
 import * as pg from 'pg';
 import { Account, UserToken } from './interface';
+import config from './config';
 import logger from './logger';
 
-const HOST = process.env.PG_HOST || 'authdb.cggrl7pirkvu.ap-northeast-2.rds.amazonaws.com';
-const PORT = process.env.PG_PORT || 5432;
+const HOST = config.PG_HOST;
+const PORT = config.PG_PORT;
 
 class Repository {
   client: pg.Client;

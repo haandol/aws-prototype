@@ -4,13 +4,14 @@ import * as corsMiddleware from 'restify-cors-middleware';
 import { Token } from './interface';
 import logger from './logger';
 import routes from './routes';
+import config from './config';
 
-const clientId = process.env.CLIENT_ID || 'secretKey';
-const secretKey = process.env.SECRET_KEY || 'secretKey';
+const CLIENT_ID = config.CLIENT_ID;
+const SECRET_KEY = config.SECRET_KEY;
 
 const cors = corsMiddleware({
   origins: ['*'],
-  allowHeaders: ['Authorization'],
+  allowHeaders: ['authorization'],
   exposeHeaders: [],
 });
 
@@ -23,7 +24,7 @@ server.use(restify.plugins.bodyParser());
 server.use(restify.plugins.gzipResponse());
 server.use(cors.actual);
 
-server.use((req: restify.Request, res: restify.Response, next: restify.Next) => {
+const checkAuthority = (req: restify.Request, res: restify.Response, next: restify.Next) => {
   const accessToken = req.headers['authorization'];
   if (!accessToken) {
     res.send(403, 'Not Authorized');
@@ -31,20 +32,21 @@ server.use((req: restify.Request, res: restify.Response, next: restify.Next) => 
   }
 
   try {
-    const decoded: Token = <Token>jwt.verify(accessToken, secretKey);
-    if (decoded.clientId !== clientId) {
+    const decoded: Token = <Token>jwt.verify(accessToken, SECRET_KEY);
+    if (decoded.clientId !== CLIENT_ID) {
       throw new Error('CLIENT_ID does not match');
     }
     // TODO: should check email using grpc
     return next();
   } catch (e) {
-    logger.error(e);
+    logger.error(e.stack);
     res.send(403, 'Not Verified');
     return next(false);
   }
-});
+};
 
 async function init() {
+  server.use(checkAuthority);
   server.post('/getProduct', routes.getProduct);
   server.post('/listProducts', routes.listProducts);
 }

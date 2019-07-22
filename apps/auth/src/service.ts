@@ -2,13 +2,18 @@ import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import Repository from './repository';
 import { Account, UserToken } from './interface';
+import config from './config';
 
+const CLIENT_ID = config.CLIENT_ID;
+const SECRET_KEY = config.SECRET_KEY;
 const SALT_ROUNDS = 9;
+const DUMMY_PASS = 'drowssap';
+const expiresIn = '365d';
 
 class Service {
   repository: Repository;
 
-  constructor(private clientId: string, private secretKey: string) {
+  constructor() {
     this.repository = new Repository();
   }
 
@@ -20,12 +25,12 @@ class Service {
   _generateAccessToken(email: string): string {
     return jwt.sign(
         {
-          clientId: this.clientId,
+          clientId: CLIENT_ID,
           email: email,
-          password: 'password',
+          password: DUMMY_PASS,
         },
-        this.secretKey,
-        { expiresIn: '365d' }
+        SECRET_KEY,
+        { expiresIn },
       );
   }
 

@@ -1,5 +1,5 @@
 import API, { graphqlOperation } from '@aws-amplify/api';
-import config from './aws-exports';
+import config from './config';
 import { Product } from './interface';
 
 API.configure(config);
