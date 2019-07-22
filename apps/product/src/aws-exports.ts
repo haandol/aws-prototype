@@ -1,10 +1,8 @@
 const awsmobile = {
     'aws_project_region': 'ap-northeast-2',
-    'aws_appsync_graphqlEndpoint': 'https://slfce6mapvct7fgdk4jhboqfza.appsync-api.ap-northeast-2.amazonaws.com/graphql',
-    'aws_appsync_region': 'ap-northeast-2',
+    'aws_appsync_graphqlEndpoint': process.env.AWS_APPSYNC_GRAPHQL_ENDPOINT || 'https://easrbddonnh2zlfln3ezicdnti.appsync-api.ap-northeast-2.amazonaws.com/graphql',
     'aws_appsync_authenticationType': 'API_KEY',
-    'aws_appsync_apiKey': 'da2-4sluvn2mwzdr5ltmszm6hxvgei',
+    'aws_appsync_apiKey': process.env.AWS_APPSYNC_APIKEY || 'da2-dyzzoobszzedjdsdrbgk3rhjgq',
 };
-
 
 export default awsmobile;

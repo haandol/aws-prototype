@@ -8,8 +8,29 @@ class Repository {
   constructor() {
   }
 
-  async query(input: {[key: string]: any}): Promise<Product[]> {
-    const productsQuery = `query listProducts (
+  async getProduct(id: string, shop: string): Promise<Product> {
+    const query = `query getProduct (
+      $id: String!
+      $shop: String!
+) {
+  getProduct(id: $id, shop: $shop) {
+    id
+    shop
+    date
+    from_at
+    to_at
+    name
+    price
+    link
+    img
+  }
+}`;
+    const product = await API.graphql(graphqlOperation(query, {id, shop}));
+    return <Product>product;
+  }
+
+  async listProducts(input: {[key: string]: any}): Promise<Product[]> {
+    const query = `query listProducts (
       $filter: TableProductFilterInput
 ) {
   listProducts(filter: $filter) {
@@ -26,7 +47,7 @@ class Repository {
     }
   }
 }`;
-    const products = await API.graphql(graphqlOperation(productsQuery));
+    const products = await API.graphql(graphqlOperation(query, {filter: input}));
     return <Product[]>products;
   }
 }

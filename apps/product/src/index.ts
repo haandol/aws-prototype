@@ -19,7 +19,8 @@ server.use(restify.plugins.gzipResponse());
 server.use(cors.actual);
 
 async function init() {
-  server.post('/graphql', routes.graphql);
+  server.post('/getProduct', routes.getProduct);
+  server.post('/listProducts', routes.listProducts);
 }
 
 async function main() {

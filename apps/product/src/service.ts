@@ -9,8 +9,12 @@ class Service {
     this.repository = new Repository();
   }
 
-  async query(input: {[key: string]: any}): Promise<Product[]> {
-    return await this.repository.query(input);
+  async getProduct(id: string, shop: string): Promise<Product> {
+    return await this.repository.getProduct(id, shop);
+  }
+
+  async listProducts(input: {[key: string]: any}): Promise<Product[]> {
+    return await this.repository.listProducts(input);
   }
 }
 
