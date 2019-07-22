@@ -40,16 +40,6 @@ class Service {
     }
   }
 
-  _isValidToken(accessToken: string): boolean {
-    try {
-      jwt.verify(accessToken, this.secretKey);
-      return true;
-    } catch (e) {
-      logger.error(e);
-    }
-    return false;
-  }
-
   async getTokenUsingPassword(email: string, password: string): Promise<UserToken> {
     let account = await this.repository.getAccountByEmail(email);
     const hashedPass = await this._generateHashedPassword(password);
