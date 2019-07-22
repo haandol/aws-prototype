@@ -17,7 +17,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "appsync_role_policy" {
-  name = "product_appsync_policy"
+  name = "appsync_policy"
   role = "${aws_iam_role.appsync_role.id}"
 
   policy = <<EOF
@@ -38,9 +38,9 @@ resource "aws_iam_role_policy" "appsync_role_policy" {
 EOF
 }
 
-resource "aws_appsync_graphql_api" "product_graphql" {
+resource "aws_appsync_graphql_api" "product_graphql_api" {
   authentication_type = "API_KEY"
-  name = "product_appsync_graphql"
+  name = "product_graphql_api"
   schema = <<EOF
 type Product {
 	id: String!
@@ -108,11 +108,23 @@ EOF
 }
 
 resource "aws_appsync_datasource" "product_datasource" {
-  api_id = "${aws_appsync_graphql_api.product_graphql.id}"
-  name = "product_appsync_datasource"
+  api_id = "${aws_appsync_graphql_api.product_graphql_api.id}"
+  name = "product_datasource"
   service_role_arn = "${aws_iam_role.appsync_role.arn}"
   type = "AMAZON_DYNAMODB"
   dynamodb_config {
     table_name = "${aws_dynamodb_table.product_table.name}"
   }
+}
+
+resource "aws_appsync_api_key" "product_api_key" {
+  api_id = "${aws_appsync_graphql_api.product_graphql_api.id}"
+}
+
+output "graphql_api_uris" {
+  value = "${aws_appsync_graphql_api.product_graphql_api.uris}"
+}
+
+output "graphql_api_key" {
+  value = "${aws_appsync_api_key.product_api_key.key}"
 }
