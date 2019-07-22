@@ -82,15 +82,25 @@ class GSAgent:
                 continue
 
             item_id = item.select('li.prd-item')[0]['id'].split('_')[1]
+
             times = item.select('.times')[0].get_text().split('-')
             if item.select('img'):
                 img = 'http:' + item.select('img')[0]['src'] 
             else:
-                img = ''
+                img = 'http://#'
+
             info = item.select('dl.prd-info')[0]
-            name = info.select('.prd-name a')[0]
-            link = self.BASE_URL + name['href']
-            price = info.select('.price-info strong')
+            if info.select('.prd-name a'):
+                name = info.select('.prd-name a')[0]
+                link = self.BASE_URL + name['href']
+            else:
+                name = info.select('.prd-name')[0]
+                link = 'http://#'
+            
+            if info.select('.price-info strong'):
+                price = info.select('.price-info strong')
+            else:
+                price = 0
 
             products.append(Product({
                 'id': '{}-{}'.format(self.shop, item_id),
