@@ -80,7 +80,10 @@ class GSAgent:
         for item in items:
             item_id = item.select('li.prd-item')[0]['id'].split('_')[1]
             times = item.select('.times')[0].get_text().split('-')
-            img = 'http:' + item.select('img')[0]['src']
+            if item.select('img'):
+                img = 'http:' + item.select('img')[0]['src'] 
+            else:
+                img = ''
             info = item.select('dl.prd-info')[0]
             name = info.select('.prd-name a')[0]
             link = self.BASE_URL + name['href']
