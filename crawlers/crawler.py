@@ -78,6 +78,9 @@ class GSAgent:
         soup = BeautifulSoup(content, 'html.parser')
         items = soup.find_all('article', 'items')
         for item in items:
+            if item.select('.onAirLast'):
+                continue
+
             item_id = item.select('li.prd-item')[0]['id'].split('_')[1]
             times = item.select('.times')[0].get_text().split('-')
             if item.select('img'):
