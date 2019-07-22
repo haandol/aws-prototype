@@ -1,8 +1,7 @@
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import Repository from './repository';
-import logger from './logger';
-import { UserToken } from './interface';
+import { Account, UserToken } from './interface';
 
 const SALT_ROUNDS = 9;
 
@@ -14,18 +13,18 @@ class Service {
   }
 
   async _generateHashedPassword(plainText: string): Promise<string> {
-      const salt = await bcrypt.genSalt(SALT_ROUNDS);
-      return await bcrypt.hash(plainText, salt);
+    const salt = await bcrypt.genSalt(SALT_ROUNDS);
+    return await bcrypt.hash(plainText, salt);
   }
 
-  _generateAccessToken(clientId: string, email: string): string {
-      return jwt.sign(
+  _generateAccessToken(email: string): string {
+    return jwt.sign(
         {
-          clientId: clientId,
+          clientId: this.clientId,
           email: email,
           password: 'password',
         },
-        this.clientId,
+        this.secretKey,
         { expiresIn: '365d' }
       );
   }
@@ -48,17 +47,21 @@ class Service {
     }
 
     if (account.accessToken) {  // signin
-      await this._checkPassword(password, account.password);
+      await this._checkPassword(hashedPass, account.password);
       return { 
         email: account.email,
         accessToken: account.accessToken || '',
         refreshToken: account.refreshToken || '',
       };
     } else {    // signup
-      const accessToken = await this._generateAccessToken(email, hashedPass);
+      const accessToken = await this._generateAccessToken(email);
       const refreshToken = await this._generateRefreshToken(accessToken);
       return await this.repository.updateToken(account.email, accessToken, refreshToken);
     }
+  }
+
+  async getAccountByEmail(email: string): Promise<Account> {
+    return await this.repository.getAccountByEmail(email);
   }
 }
 

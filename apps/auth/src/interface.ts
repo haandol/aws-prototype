@@ -10,3 +10,9 @@ export interface UserToken {
   accessToken: string;
   refreshToken: string; 
 }
+
+export interface Token {
+  clientId: string;
+  email: string;
+  password: string;
+}

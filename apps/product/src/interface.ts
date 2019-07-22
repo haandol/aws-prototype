@@ -8,3 +8,8 @@ export interface Product {
   img: string;
   name: string;
 }
+
+export interface Token {
+  clientId: string;
+  email: string;
+}

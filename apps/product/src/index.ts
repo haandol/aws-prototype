@@ -1,9 +1,11 @@
 import * as restify from 'restify';
 import * as jwt from 'jsonwebtoken';
 import * as corsMiddleware from 'restify-cors-middleware';
+import { Token } from './interface';
 import logger from './logger';
 import routes from './routes';
 
+const clientId = process.env.CLIENT_ID || 'secretKey';
 const secretKey = process.env.SECRET_KEY || 'secretKey';
 
 const cors = corsMiddleware({
@@ -23,12 +25,21 @@ server.use(cors.actual);
 
 server.use((req: restify.Request, res: restify.Response, next: restify.Next) => {
   const accessToken = req.headers['authorization'];
+  if (!accessToken) {
+    res.send(403, 'Not Authorized');
+    return next(false);
+  }
+
   try {
-    jwt.verify(accessToken, secretKey);
+    const decoded: Token = <Token>jwt.verify(accessToken, secretKey);
+    if (decoded.clientId !== clientId) {
+      throw new Error('CLIENT_ID does not match');
+    }
+    // TODO: should check email using grpc
     return next();
   } catch (e) {
     logger.error(e);
-    res.send(403, 'Not Authorized');
+    res.send(403, 'Not Verified');
     return next(false);
   }
 });

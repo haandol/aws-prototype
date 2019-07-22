@@ -11,10 +11,12 @@
   "license": "ISC",
   "dependencies": {
     "@aws-amplify/api": "^1.0.39",
+    "@types/jsonwebtoken": "^8.3.2",
     "@types/node": "^12.6.8",
     "@types/restify": "^7.2.12",
     "@types/restify-cors-middleware": "^1.0.1",
     "@types/winston": "^2.4.4",
+    "jsonwebtoken": "^8.5.1",
     "restify": "^8.3.3",
     "restify-cors-middleware": "^1.1.1",
     "typescript": "^3.5.3",

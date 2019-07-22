@@ -20,6 +20,7 @@ server.use(cors.actual);
 
 async function init() {
   server.post('/signin', routes.signin);
+  server.get('/account', routes.checkAuthority, routes.getAccountByEmail);
   server.post('/signout', routes.signout);
 }
 
