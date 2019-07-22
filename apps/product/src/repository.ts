@@ -9,10 +9,10 @@ class Repository {
   }
 
   async query(input: {[key: string]: any}): Promise<Product[]> {
-    const productsQuery = `query products(
+    const productsQuery = `query listProducts (
       $filter: TableProductFilterInput
 ) {
-  products(filter: $filter) {
+  listProducts(filter: $filter) {
     items {
       id
       shop
@@ -25,11 +25,8 @@ class Repository {
       img
     }
   }
-}
-    `;
-    console.log('!!!!', input);
+}`;
     const products = await API.graphql(graphqlOperation(productsQuery));
-    console.log('@@@@@', products);
     return <Product[]>products;
   }
 }

@@ -54,9 +54,14 @@ type Product {
 	price: Int
 }
 
+type ProductConnection {
+  items: [Product]
+  nextToken: String
+}
+
 type Query {
-	product(id: String!, shop: String!, date: Int): Product
-	products(filter: TableProductFilterInput): [Product]
+	getProduct(id: String!, shop: String!, date: Int): Product
+	listProducts(filter: TableProductFilterInput, limit: Int, nextToken: String): ProductConnection
 }
 
 input TableIntFilterInput {
