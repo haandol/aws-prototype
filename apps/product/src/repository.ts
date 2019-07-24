@@ -14,10 +14,6 @@ class Repository {
 
   async setAlarm(email: string, id: string, shop: string): Promise<Product> {
     const product = await this.getProduct(id, shop);
-
-    await this._setAlarm(email, product.from_at);
-
-    return product;
   }
 
   async getProduct(id: string, shop: string): Promise<Product> {
