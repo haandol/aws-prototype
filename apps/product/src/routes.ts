@@ -23,8 +23,12 @@ function responder(handler: (req: restify.Request) => Promise<any>) {
 }
 
 export default {
+  setAlarm: responder(async (req): Promise<Product> => {
+    const email = req.body._session.email;
+    return await service.setAlarm(email, req.body.id, req.body.shop);;
+  }),
   getProduct: responder(async (req): Promise<Product> => {
-    return await service.getProduct(req.body.id, req.body.shop);;
+    return await service.getProduct(req.query.id, req.query.shop);;
   }),
   listProducts: responder(async (req): Promise<Product[]> => {
     return await service.listProducts(req.body);;

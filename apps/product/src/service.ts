@@ -8,6 +8,10 @@ class Service {
     this.repository = new Repository();
   }
 
+  async setAlarm(email: string, id: string, shop: string): Promise<Product> {
+    return await this.repository.setAlarm(email, id, shop);
+  }
+
   async getProduct(id: string, shop: string): Promise<Product> {
     return await this.repository.getProduct(id, shop);
   }

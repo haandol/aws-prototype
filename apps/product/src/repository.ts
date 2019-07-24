@@ -8,6 +8,18 @@ class Repository {
   constructor() {
   }
 
+  async _setAlarm(email: string, from_at: number) {
+    // TODO: implement alarm service and send request
+  }
+
+  async setAlarm(email: string, id: string, shop: string): Promise<Product> {
+    const product = await this.getProduct(id, shop);
+
+    await this._setAlarm(email, product.from_at);
+
+    return product;
+  }
+
   async getProduct(id: string, shop: string): Promise<Product> {
     const query = `query getProduct (
       $id: String!

@@ -36,6 +36,7 @@ const checkAuthority = (req: restify.Request, res: restify.Response, next: resti
     if (decoded.clientId !== CLIENT_ID) {
       throw new Error('CLIENT_ID does not match');
     }
+    req.body = Object.assign({_session: decoded}, req.body);
     // TODO: should check email using grpc
     return next();
   } catch (e) {
@@ -47,8 +48,9 @@ const checkAuthority = (req: restify.Request, res: restify.Response, next: resti
 
 async function init() {
   server.use(checkAuthority);
-  server.post('/getProduct', routes.getProduct);
-  server.post('/listProducts', routes.listProducts);
+  server.post('/alarm', routes.setAlarm);
+  server.get('/product', routes.getProduct);
+  server.post('/products', routes.listProducts);
 }
 
 async function main() {

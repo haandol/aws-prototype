@@ -38,7 +38,7 @@ export default {
     return req.body;
   }),
   getAccountByEmail: responder(async (req) => {
-    const email = req.body && req.body._session && req.body._session.email;
+    const email: string = req.body._session.email;
     logger.debug(`[Account] query: ${JSON.stringify(email)}`);
     return await service.getAccountByEmail(email);
   }),
