@@ -56,3 +56,48 @@ resource "aws_dynamodb_table" "product_table" {
     write_capacity = 0
   }
 }
+
+resource "aws_dynamodb_table" "alarm_table" {
+  name = "Alarm"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key = "id"
+  range_key = "user_id"
+
+  attribute {
+    name = "id"
+    type = "S"
+  }
+
+  attribute {
+    name = "user_id"
+    type = "S"
+  }
+
+  attribute {
+    name = "product_id"
+    type = "S"
+  }
+
+  attribute {
+    name = "date"
+    type = "N"
+  }
+  
+  global_secondary_index {
+    hash_key = "id"
+    name = "DateIndex"
+    projection_type = "ALL"
+    range_key = "date"
+    read_capacity = 0
+    write_capacity = 0
+  }
+
+  global_secondary_index {
+    hash_key = "id"
+    name = "ProductIdIndex"
+    projection_type = "KEYS_ONLY"
+    range_key = "product_id"
+    read_capacity = 0
+    write_capacity = 0
+  }
+}
