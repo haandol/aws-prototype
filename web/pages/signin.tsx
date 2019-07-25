@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import config from '../config';
 import Layout from '../components/Layout';
+import Router from 'next/router';
 
 interface IProps {
 }
@@ -52,6 +53,7 @@ class Signin extends React.Component<IProps, IState> {
         } else {
           localStorage.setItem('token', accessToken);
         }
+        Router.push('/');
       } catch(e) {
         console.error(e);
         alert('Failed to get token');
