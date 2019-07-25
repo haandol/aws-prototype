@@ -9,6 +9,7 @@ import Layout from '../components/Layout';
 const Index = (props: IndexProps) => (
   <Layout>
     <div className="program">
+      <div>{props.programs.length}</div>
       {props.programs.map((program: IProgram) => {
         <Program item={program}></Program>
       })}
@@ -50,12 +51,11 @@ Index.getInitialProps = async() => {
 
     programs.push({
       date: today,
-      products: res,
+      products: res.data.data.data.listProducts.items,
     });
   } catch (e) {
     console.error(e);
   }
-
   return { programs };
 }
 
