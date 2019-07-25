@@ -1,6 +1,8 @@
 import re
+import redis
 import boto3
 import requests
+import traceback
 from botocore.exceptions import ClientError
 from decimal import Decimal
 from datetime import datetime
@@ -120,7 +122,8 @@ class GSAgent:
         response = self._fetch(today)
         return self._parse(response, today)
 
-    def update_products(self, db, products):
+    def update_products(self, products):
+        db = DynamoDB()
         table = db.resource.Table('Product')
         updated_products = []
         for product in products:
@@ -137,6 +140,13 @@ class GSAgent:
                 updated_products.append(product.id)
 
         return updated_products
+
+    def update_cache(self, products):
+        client = redis.Redis(
+            host='reids.3kmfwp.0001.apn2.cache.amazonaws.com', port=6379, db=0
+        )
+        for product in products:
+            client.set(product['id'], json.dumps(product.to_item()))
 
 
 class DynamoDB:
@@ -155,7 +165,10 @@ class DynamoDB:
 def handler(event, context):
     agent = GSAgent()
     products = agent.crawl()
-    db = DynamoDB()
-    updated_product_ids = agent.update_products(db, products)
+    updated_product_ids = agent.update_products(products)
     if updated_product_ids:
-        pass
+        try:
+            agent.update_cache(filter(lambda x: x['id'] in updated_product_ids, products))
+        except Exception as e:
+            traceback.print_exc()
+            print('update cache error')
