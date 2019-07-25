@@ -1,25 +1,52 @@
+import * as _ from 'lodash';
 import API, { graphqlOperation } from '@aws-amplify/api';
 import config from './config';
-import { Product } from './interface';
+import { Alarm, Product } from './interface';
 
 API.configure(config);
 
 class Repository {
-  constructor() {
+  async setAlarm(userId: string, productId: string, shop: string): Promise<Alarm> {
+    const product = await this.getProduct(productId, shop);
+    if (!product) {
+      throw new Error(`There is no such product: ${productId}`);
+    }
+
+    const mutation = `mutation createAlarm (
+  $input: CreateAlarmInput
+) {
+  createAlarm(input: $input) {
+    user_id
+    product_id
+  }
+}`;
+    const input = {user_id: userId, product_id: productId}; 
+    const res = await API.graphql(graphqlOperation(
+      mutation, {input}
+    ));
+    return res.data.createAlarm;
   }
 
-  async _setAlarm(email: string, from_at: number) {
-    // TODO: implement alarm service and send request
+  async deleteAalrm(userId: string, productId: string): Promise<Alarm> {
+    const mutation = `mutation deleteAlarm (
+  $input: DeleteAlarmInput
+) {
+  deleteAlarm(input: $input) {
+    user_id
+    product_id
   }
-
-  async setAlarm(email: string, id: string, shop: string): Promise<Product> {
-    const product = await this.getProduct(id, shop);
+}`;
+    const input = {user_id: userId, product_id: productId};
+    const res = await API.graphql(graphqlOperation(
+      mutation, {input}
+    ));
+    return res.data.deleteAlarm;
   }
 
   async getProduct(id: string, shop: string): Promise<Product> {
     const query = `query getProduct (
-      $id: String!
-      $shop: String!
+  $id: String!
+  $shop: String!
 ) {
   getProduct(id: $id, shop: $shop) {
     id
@@ -55,7 +82,8 @@ class Repository {
     }
   }
 }`;
-    const products = await API.graphql(graphqlOperation(query, {filter: input}));
+    const filter = _.omit(input, ['_session']);
+    const products = await API.graphql(graphqlOperation(query, { filter }));
     return <Product[]>products;
   }
 }

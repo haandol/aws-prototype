@@ -9,6 +9,11 @@ export interface Product {
   name: string;
 }
 
+export interface Alarm {
+  user_id: string;
+  product_id: string;
+}
+
 export interface Token {
   clientId: string;
   email: string;

@@ -93,8 +93,8 @@ input DeleteAlarmInput {
 }
 
 type Mutation {
-  createAlarm(input: CreateAlarmInput!): Alarm
-  deleteAlarm(input: DeleteAlarmInput!): Alarm
+  createAlarm(input: CreateAlarmInput): Alarm
+  deleteAlarm(input: DeleteAlarmInput): Alarm
 }
 
 input TableIntFilterInput {
@@ -122,7 +122,6 @@ input TableProductFilterInput {
 }
 
 input TableAlarmFilterInput {
-	id: TableStringFilterInput
 	user_id: TableStringFilterInput
 	product_id: TableStringFilterInput
 }

@@ -1,5 +1,5 @@
 import Repository from './repository';
-import { Product } from './interface';
+import { Alarm, Product } from './interface';
 
 class Service {
   repository: Repository;
@@ -8,8 +8,12 @@ class Service {
     this.repository = new Repository();
   }
 
-  async setAlarm(email: string, id: string, shop: string): Promise<Product> {
-    return await this.repository.setAlarm(email, id, shop);
+  async setAlarm(userId: string, productId: string, shop: string): Promise<Alarm> {
+    return await this.repository.setAlarm(userId, productId, shop);
+  }
+
+  async deleteAlarm(userId: string, productId: string): Promise<Alarm> {
+    return await this.repository.deleteAalrm(userId, productId);
   }
 
   async getProduct(id: string, shop: string): Promise<Product> {
