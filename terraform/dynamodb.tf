@@ -60,13 +60,8 @@ resource "aws_dynamodb_table" "product_table" {
 resource "aws_dynamodb_table" "alarm_table" {
   name = "Alarm"
   billing_mode = "PAY_PER_REQUEST"
-  hash_key = "id"
-  range_key = "user_id"
-
-  attribute {
-    name = "id"
-    type = "S"
-  }
+  hash_key = "user_id"
+  range_key = "product_id"
 
   attribute {
     name = "user_id"
@@ -78,24 +73,10 @@ resource "aws_dynamodb_table" "alarm_table" {
     type = "S"
   }
 
-  attribute {
-    name = "date"
-    type = "N"
-  }
-  
   global_secondary_index {
-    hash_key = "id"
-    name = "DateIndex"
-    projection_type = "ALL"
-    range_key = "date"
-    read_capacity = 0
-    write_capacity = 0
-  }
-
-  global_secondary_index {
-    hash_key = "id"
+    hash_key = "user_id"
     name = "ProductIdIndex"
-    projection_type = "KEYS_ONLY"
+    projection_type = "ALL"
     range_key = "product_id"
     read_capacity = 0
     write_capacity = 0

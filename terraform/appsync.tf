@@ -30,7 +30,8 @@ resource "aws_iam_role_policy" "appsync_role_policy" {
       ],
       "Effect": "Allow",
       "Resource": [
-        "${aws_dynamodb_table.product_table.arn}"
+        "${aws_dynamodb_table.product_table.arn}",
+        "${aws_dynamodb_table.alarm_table.arn}"
       ]
     }
   ]
@@ -54,8 +55,18 @@ type Product {
 	price: Int
 }
 
+type Alarm {
+  user_id: String!
+  product_id: String!
+}
+
 type ProductConnection {
   items: [Product]
+  nextToken: String
+}
+
+type AlarmConnection {
+  items: [Alarm]
   nextToken: String
 }
 
@@ -65,6 +76,25 @@ type Query {
   queryProductsByDateIndex(id: String!, first: Int, after: String): ProductConnection
 	queryProductsByToAtIndex(id: String!, first: Int, after: String): ProductConnection
 	queryProductsByFromAtIndex(id: String!, first: Int, after: String): ProductConnection
+
+  listAlarms(filter: TableAlarmFilterInput, limit: Int, nextToken: String): AlarmConnection
+  queryAlarmsByUserId(userId: String!): AlarmConnection
+  queryAlarmsByProductId(productId: String!): AlarmConnection
+}
+
+input CreateAlarmInput {
+  user_id: String!;
+  product_id: String!;
+}
+
+input DeleteAlarmInput {
+  user_id: String!;
+  product_id: String!;
+}
+
+type Mutation {
+  createAlarm(input: CreateAlarmInput!): Alarm
+  deleteAlarm(input: DeleteAlarmInput!): Alarm
 }
 
 input TableIntFilterInput {
@@ -91,6 +121,12 @@ input TableProductFilterInput {
 	link: TableStringFilterInput
 }
 
+input TableAlarmFilterInput {
+	id: TableStringFilterInput
+	user_id: TableStringFilterInput
+	product_id: TableStringFilterInput
+}
+
 input TableStringFilterInput {
 	ne: String
 	eq: String
@@ -106,6 +142,7 @@ input TableStringFilterInput {
 
 schema {
   query: Query
+  mutation: Mutation
 }
 EOF
 }
@@ -117,6 +154,16 @@ resource "aws_appsync_datasource" "product_datasource" {
   type = "AMAZON_DYNAMODB"
   dynamodb_config {
     table_name = "${aws_dynamodb_table.product_table.name}"
+  }
+}
+
+resource "aws_appsync_datasource" "alarm_datasource" {
+  api_id = "${aws_appsync_graphql_api.product_graphql_api.id}"
+  name = "alarm_datasource"
+  service_role_arn = "${aws_iam_role.appsync_role.arn}"
+  type = "AMAZON_DYNAMODB"
+  dynamodb_config {
+    table_name = "${aws_dynamodb_table.alarm_table.name}"
   }
 }
 
@@ -178,12 +225,12 @@ resource "aws_appsync_resolver" "query_products_by_date" {
   "version": "2017-02-28",
   "operation": "Query",
   "query": {
-    "expression": "#id = :id",
+    "expression": "#date = :date",
     "expressionNames": {
-      "#id": "id",
+      "#date": "date",
     },
     "expressionValues": {
-      ":id": $util.dynamodb.toDynamoDBJson($ctx.args.id),
+      ":date": $util.dynamodb.toDynamoDBJson($ctx.args.date),
     },
   },
   "index": "DateIndex",
@@ -210,12 +257,12 @@ resource "aws_appsync_resolver" "query_products_by_to_at" {
   "version": "2017-02-28",
   "operation": "Query",
   "query": {
-    "expression": "#id = :id",
+    "expression": "#to_at = :to_at",
     "expressionNames": {
-      "#id": "id",
+      "#to_at": "to_at",
     },
     "expressionValues": {
-      ":id": $util.dynamodb.toDynamoDBJson($ctx.args.id),
+      ":to_at": $util.dynamodb.toDynamoDBJson($ctx.args.to_at),
     },
   },
   "index": "ToAtIndex",
@@ -242,12 +289,12 @@ resource "aws_appsync_resolver" "query_products_by_from_at" {
   "version": "2017-02-28",
   "operation": "Query",
   "query": {
-    "expression": "#id = :id",
+    "expression": "#from_at = :from_at",
     "expressionNames": {
-      "#id": "id",
+      "#from_at": "from_at",
     },
     "expressionValues": {
-      ":id": $util.dynamodb.toDynamoDBJson($ctx.args.id),
+      ":from_at": $util.dynamodb.toDynamoDBJson($ctx.args.from_at),
     },
   },
   "index": "FromAtIndex",
@@ -255,6 +302,143 @@ resource "aws_appsync_resolver" "query_products_by_from_at" {
   "nextToken": $util.toJson($util.defaultIfNullOrEmpty($ctx.args.after, null)),
   "scanIndexForward": true,
   "select": "ALL_ATTRIBUTES",
+}
+EOF
+
+  response_template = <<EOF
+$util.toJson($context.result)
+EOF
+}
+
+resource "aws_appsync_resolver" "list_alarms" {
+  api_id = "${aws_appsync_graphql_api.product_graphql_api.id}"
+  field = "listAlarms"
+  data_source = "${aws_appsync_datasource.alarm_datasource.name}"
+  type = "Query"
+
+  request_template = <<EOF
+{
+  "version": "2017-02-28",
+  "operation": "Scan",
+  "filter": #if($context.args.filter) $util.transform.toDynamoDBFilterExpression($ctx.args.filter) #else null #end,
+  "limit": $util.defaultIfNull($ctx.args.limit, 20),
+  "nextToken": $util.toJson($util.defaultIfNullOrEmpty($ctx.args.nextToken, null)),
+}
+EOF
+
+  response_template = <<EOF
+$util.toJson($context.result)
+EOF
+}
+
+resource "aws_appsync_resolver" "query_alarms_by_user_id" {
+  api_id = "${aws_appsync_graphql_api.product_graphql_api.id}"
+  field = "queryAlarmsByUserId"
+  data_source = "${aws_appsync_datasource.alarm_datasource.name}"
+  type = "Query"
+
+  request_template = <<EOF
+{
+  "version": "2017-02-28",
+  "operation": "Query",
+  "query": {
+    "expression": "#user_id = :user_id",
+    "expressionNames": {
+      "#user_id": "user_id",
+    },
+    "expressionValues": {
+      ":user_id": $util.dynamodb.toDynamoDBJson($ctx.args.user_id),
+    },
+  },
+  "index": "UserIdIndex",
+  "limit": $util.defaultIfNull($ctx.args.first, 20),
+  "nextToken": $util.toJson($util.defaultIfNullOrEmpty($ctx.args.after, null)),
+  "scanIndexForward": true,
+  "select": "ALL_ATTRIBUTES",
+}
+EOF
+
+  response_template = <<EOF
+$util.toJson($context.result)
+EOF
+}
+
+resource "aws_appsync_resolver" "query_alarms_by_product_id" {
+  api_id = "${aws_appsync_graphql_api.product_graphql_api.id}"
+  field = "queryAlarmsByProductId"
+  data_source = "${aws_appsync_datasource.alarm_datasource.name}"
+  type = "Query"
+
+  request_template = <<EOF
+{
+  "version": "2017-02-28",
+  "operation": "Query",
+  "query": {
+    "expression": "#product_id = :product_id",
+    "expressionNames": {
+      "#product_id": "product_id",
+    },
+    "expressionValues": {
+      ":product_id": $util.dynamodb.toDynamoDBJson($ctx.args.product_id),
+    },
+  },
+  "index": "UserIdIndex",
+  "limit": $util.defaultIfNull($ctx.args.first, 20),
+  "nextToken": $util.toJson($util.defaultIfNullOrEmpty($ctx.args.after, null)),
+  "scanIndexForward": true,
+  "select": "ALL_ATTRIBUTES",
+}
+EOF
+
+  response_template = <<EOF
+$util.toJson($context.result)
+EOF
+}
+
+resource "aws_appsync_resolver" "createAlarm" {
+  api_id = "${aws_appsync_graphql_api.product_graphql_api.id}"
+  field = "createAlarm"
+  data_source = "${aws_appsync_datasource.alarm_datasource.name}"
+  type = "Mutation"
+
+  request_template = <<EOF
+{
+  "version": "2017-02-28",
+  "operation": "PutItem",
+  "key": {
+    "user_id": $util.dynamodb.toDynamoDBJson($ctx.args.input.user_id),
+    "product_id": $util.dynamodb.toDynamoDBJson($ctx.args.input.product_id),
+  },
+  "attributeValues": $util.dynamodb.toMapValuesJson($ctx.args.input),
+  "condition": {
+    "expression": "attribute_not_exists(#user_id) AND attribute_not_exists(#product_id)",
+    "expressionNames": {
+      "#user_id": "user_id",
+      "#product_id": "product_id",
+    },
+  },
+}
+EOF
+
+  response_template = <<EOF
+$util.toJson($context.result)
+EOF
+}
+
+resource "aws_appsync_resolver" "deleteAlarm" {
+  api_id = "${aws_appsync_graphql_api.product_graphql_api.id}"
+  field = "deleteAlarm"
+  data_source = "${aws_appsync_datasource.alarm_datasource.name}"
+  type = "Mutation"
+
+  request_template = <<EOF
+{
+  "version": "2017-02-28",
+  "operation": "DeleteItem",
+  "key": {
+    "user_id": $util.dynamodb.toDynamoDBJson($ctx.args.input.user_id),
+    "product_id": $util.dynamodb.toDynamoDBJson($ctx.args.input.product_id),
+  },
 }
 EOF
 
