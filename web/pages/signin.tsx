@@ -35,7 +35,7 @@ class Signin extends React.Component<IProps, IState> {
       }
 
       try {
-        const res = await axios({
+        const res: any = await axios({
           method: 'post',
           url: config.AUTH_URL + '/signin',
           data: {
@@ -46,8 +46,7 @@ class Signin extends React.Component<IProps, IState> {
           responseType: 'json',
         });
 
-        console.log(res);
-        const accessToken = res && res.data && res.data.access_token;
+        const accessToken = res && res.data && res.data.data && res.data.data.accessToken;
         if (!accessToken) {
           alert('No access token');
         } else {

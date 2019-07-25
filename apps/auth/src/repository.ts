@@ -33,7 +33,12 @@ class Repository {
       values: [email, password]
     });
     logger.debug(`INSERT: ${JSON.stringify(res.rows)}`);
-    return <Account>res.rows[0];
+    return {
+      email: res.rows[0].email,
+      password: res.rows[0].password,
+      accessToken: res.rows[0].access_token,
+      refreshToken: res.rows[0].refresh_token,
+    };
   }
 
   async getAccountByEmail(email: string): Promise<Account> {
@@ -42,7 +47,12 @@ class Repository {
       values: [email],
     });
     logger.debug(`SELECT: ${JSON.stringify(res.rows)}`);
-    return <Account>res.rows[0];
+    return {
+      email: res.rows[0].email,
+      password: res.rows[0].password,
+      accessToken: res.rows[0].access_token,
+      refreshToken: res.rows[0].refresh_token,
+    };
   }
 
   async updateToken(email: string, accessToken: string, refreshToken: string): Promise<UserToken> {
@@ -51,7 +61,11 @@ class Repository {
       values: [accessToken, refreshToken, email],
     });
     logger.debug(`UPDATE: ${JSON.stringify(res.rows)}`);
-    return <UserToken>res.rows[0];
+    return {
+      email: res.rows[0].email,
+      accessToken: res.rows[0].access_token,
+      refreshToken: res.rows[0].refresh_token,
+    };
   }
 }
 

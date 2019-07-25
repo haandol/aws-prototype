@@ -3,6 +3,7 @@ import * as jwt from 'jsonwebtoken';
 import Repository from './repository';
 import { Account, UserToken } from './interface';
 import config from './config';
+import logger from './logger';
 
 const CLIENT_ID = config.CLIENT_ID;
 const SECRET_KEY = config.SECRET_KEY;
@@ -35,7 +36,7 @@ class Service {
   }
 
   private async _generateRefreshToken(accessToken: string): Promise<string> {
-    return await bcrypt.hash(accessToken, 6);
+    return await bcrypt.hash(accessToken, SALT_ROUNDS);
   }
 
   async _checkPassword(password1: string, password2: string){
@@ -52,13 +53,15 @@ class Service {
     }
 
     if (account.accessToken) {  // signin
-      await this._checkPassword(hashedPass, account.password);
+      logger.debug('signin');
+      await this._checkPassword(password, account.password);
       return { 
         email: account.email,
         accessToken: account.accessToken || '',
         refreshToken: account.refreshToken || '',
       };
     } else {    // signup
+      logger.debug('signup');
       const accessToken = await this._generateAccessToken(email);
       const refreshToken = await this._generateRefreshToken(accessToken);
       return await this.repository.updateToken(account.email, accessToken, refreshToken);
