@@ -125,7 +125,7 @@ class GSAgent:
     def update_products(self, products):
         db = DynamoDB()
         table = db.resource.Table('Product')
-        updated_products = []
+        updated_product_ids = set()
         for product in products:
             old = table.get_item(
                 Key={
@@ -137,9 +137,9 @@ class GSAgent:
                 table.put_item(
                     Item=product.to_item(),
                 )
-                updated_products.append(product.id)
+                updated_product_ids.add(product.id)
 
-        return updated_products
+        return updated_product_ids
 
     def update_cache(self, products):
         client = redis.Redis(
@@ -168,7 +168,7 @@ def handler(event, context):
     updated_product_ids = agent.update_products(products)
     if updated_product_ids:
         try:
-            agent.update_cache(filter(lambda x: x['id'] in updated_product_ids, products))
+            agent.update_cache(filter(lambda x: x.id in updated_product_ids, products))
         except Exception as e:
             traceback.print_exc()
             print('update cache error')
