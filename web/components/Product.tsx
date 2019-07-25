@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import moment from 'moment';
+import Alarm from './Alarm';
 import { ProductProps } from '../interface/props';
 
 const Product = (props: ProductProps) => {
@@ -8,6 +9,12 @@ const Product = (props: ProductProps) => {
   const time: number = parseInt(now.format('km'));
   if (props.item.date === today && props.item.from_at <= time && time <= props.item.to_at) {
     props.item.live = 'LIVE';
+  }
+
+  const email = localStorage.getItem('email');
+  if (!email) {
+    alert('No email on localStorage');
+    return;
   }
 
   return (
@@ -25,6 +32,7 @@ const Product = (props: ProductProps) => {
           <div className="price">{props.item.price}</div>
         </div>
       </div>
+      <Alarm userId={email} productId={props.item.id} />
     </div>
   );
 };

@@ -52,6 +52,7 @@ class Signin extends React.Component<IProps, IState> {
           alert('No access token');
         } else {
           localStorage.setItem('token', accessToken);
+          localStorage.setItem('email', email);
         }
         Router.push('/');
       } catch(e) {
