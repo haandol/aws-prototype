@@ -105,7 +105,7 @@ class GSAgent:
                 price = 0
 
             products.append(Product({
-                'id': '{}-{}'.format(self.shop, item_id),
+                'id': '{}-{}-{}'.format(self.shop, today, item_id),
                 'shop': self.shop,
                 'date': today,
                 'from_at': times[0].strip(),
