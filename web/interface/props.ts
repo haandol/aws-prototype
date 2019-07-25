@@ -10,7 +10,7 @@ export interface ProductProps extends InitialProps{
 
 export interface ProgramProps extends InitialProps{
   item: {
-    date: Date;
+    date: number;
     products: IProduct[];
   }
 }

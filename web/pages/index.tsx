@@ -1,5 +1,5 @@
 import axios from 'axios';
-import moment from 'moment';
+// import moment from 'moment';
 import Program from '../components/Program';
 import { IProgram } from '../interface/interface';
 import { IndexProps } from '../interface/props';
@@ -9,10 +9,10 @@ import Layout from '../components/Layout';
 const Index = (props: IndexProps) => (
   <Layout>
     <div className="program">
-      <div>{props.programs.length}</div>
-      {props.programs.map((program: IProgram) => {
-        <Program item={program}></Program>
-      })}
+      <div>Programs: {props.programs.length}</div>
+      {props.programs.map((program: IProgram) => (
+        <Program item={program} />
+      ))}
     </div>
   </Layout>
 );
@@ -33,8 +33,9 @@ Index.getInitialProps = async() => {
     };
   }
 
-  let programs = [];
-  const today = moment().format('YYYYMMDD');
+  const programs = [];
+  // const today = moment().format('YYYYMMDD');
+  const today = 20190725;
   try {
     const res = await axios({
       method: 'post',
@@ -49,9 +50,11 @@ Index.getInitialProps = async() => {
       responseType: 'json',
     });
 
+    const products = res.data.data.data.listProducts.items;
+    console.debug(`products: ${JSON.stringify(products)}`);
     programs.push({
       date: today,
-      products: res.data.data.data.listProducts.items,
+      products,
     });
   } catch (e) {
     console.error(e);
