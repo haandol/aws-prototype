@@ -47,9 +47,11 @@ class Service {
 
   async getTokenUsingPassword(email: string, password: string): Promise<UserToken> {
     let account = await this.repository.getAccountByEmail(email);
-    const hashedPass = await this._generateHashedPassword(password);
+    logger.debug(`account: ${JSON.stringify(account)}`);
     if (!account) {
+      const hashedPass = await this._generateHashedPassword(password);
       account = await this.repository.createAccount(email, hashedPass);
+      logger.debug('create: ', JSON.stringify(account));
     }
 
     if (account.accessToken) {  // signin
@@ -61,14 +63,14 @@ class Service {
         refreshToken: account.refreshToken || '',
       };
     } else {    // signup
-      logger.debug('signup');
+      logger.debug('signup: ', JSON.stringify(account));
       const accessToken = await this._generateAccessToken(email);
       const refreshToken = await this._generateRefreshToken(accessToken);
       return await this.repository.updateToken(account.email, accessToken, refreshToken);
     }
   }
 
-  async getAccountByEmail(email: string): Promise<Account> {
+  async getAccountByEmail(email: string): Promise<Account | null> {
     return await this.repository.getAccountByEmail(email);
   }
 }

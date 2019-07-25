@@ -31,7 +31,8 @@ export default {
       throw new Error('EMAIL_OR_PASSWORD_IS_MISSING');
     }
 
-    return await service.getTokenUsingPassword(req.body.email, req.body.password);
+    return await service.getTokenUsingPassword(req.body.email,
+                                               req.body.password);
   }),
   signout: responder(async (req) => {
     logger.debug(`[Signout] payload: ${JSON.stringify(req.body)}`);

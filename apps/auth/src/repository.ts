@@ -41,18 +41,23 @@ class Repository {
     };
   }
 
-  async getAccountByEmail(email: string): Promise<Account> {
+  async getAccountByEmail(email: string): Promise<Account | null> {
     const res = await this.client.query({
       text: 'SELECT * FROM users WHERE email = $1',
       values: [email],
     });
     logger.debug(`SELECT: ${JSON.stringify(res.rows)}`);
-    return {
-      email: res.rows[0].email,
-      password: res.rows[0].password,
-      accessToken: res.rows[0].access_token,
-      refreshToken: res.rows[0].refresh_token,
-    };
+
+    if (res.rows && res.rows[0]) {
+      return {
+        email: res.rows[0].email,
+        password: res.rows[0].password,
+        accessToken: res.rows[0].access_token,
+        refreshToken: res.rows[0].refresh_token,
+      };
+    } else {
+      return null;
+    }
   }
 
   async updateToken(email: string, accessToken: string, refreshToken: string): Promise<UserToken> {
