@@ -21,7 +21,7 @@ class Repository {
   }
 }`;
     const input = {user_id: userId, product_id: productId}; 
-    const res = await API.graphql(graphqlOperation(
+    const res: any = await API.graphql(graphqlOperation(
       mutation, {input}
     ));
     return res.data.createAlarm;
@@ -37,7 +37,7 @@ class Repository {
   }
 }`;
     const input = {user_id: userId, product_id: productId};
-    const res = await API.graphql(graphqlOperation(
+    const res: any = await API.graphql(graphqlOperation(
       mutation, {input}
     ));
     return res.data.deleteAlarm;

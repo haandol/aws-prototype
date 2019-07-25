@@ -10,12 +10,14 @@
   "author": "haandol",
   "license": "ISC",
   "devDependencies": {
+    "@types/graphql": "^14.2.3",
     "@types/jsonwebtoken": "^8.3.2",
     "@types/lodash": "^4.14.136",
     "@types/node": "^12.6.8",
     "@types/restify": "^7.2.12",
     "@types/restify-cors-middleware": "^1.0.1",
     "@types/winston": "^2.4.4",
+    "@types/zen-observable": "^0.8.0",
     "typescript": "^3.5.3"
   },
   "dependencies": {

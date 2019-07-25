@@ -1,4 +1,5 @@
 import re
+import json
 import redis
 import boto3
 import requests
@@ -169,6 +170,6 @@ def handler(event, context):
     if updated_product_ids:
         try:
             agent.update_cache(filter(lambda x: x.id in updated_product_ids, products))
-        except Exception as e:
+        except:
             traceback.print_exc()
             print('update cache error')
