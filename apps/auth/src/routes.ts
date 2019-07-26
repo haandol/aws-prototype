@@ -1,6 +1,7 @@
 import * as restify from 'restify';
 import Service from './service';
 import logger from './logger';
+import { Account, UserToken } from './interface';
 
 const service: Service = new Service();
 
@@ -22,25 +23,28 @@ function responder(handler: (req: restify.Request) => Promise<any>) {
 }
 
 export default {
-  signin: responder(async (req) => {
-    logger.debug(`[Signin] payload: ${JSON.stringify(req.body)}`);
+  healthcheck: responder(async (req): Promise<void> => {
+    logger.debug(`[Healthcheck] ${JSON.stringify(req.query)}`);
+    return;
+  }),
+  signin: responder(async (req): Promise<UserToken> => {
+    logger.debug(`[Signin] ${JSON.stringify(req.body)}`);
     if (!req.body) {
       throw new Error('Empty Payload');
     }
     if (!req.body.email || !req.body.password) {
       throw new Error('EMAIL_OR_PASSWORD_IS_MISSING');
     }
-
     return await service.getTokenUsingPassword(req.body.email,
                                                req.body.password);
   }),
-  signout: responder(async (req) => {
-    logger.debug(`[Signout] payload: ${JSON.stringify(req.body)}`);
-    return req.body;
+  signout: responder(async (req): Promise<void> => {
+    logger.debug(`[Signout] ${JSON.stringify(req.body)}`);
+    return;
   }),
-  getAccountByEmail: responder(async (req) => {
+  getAccountByEmail: responder(async (req): Promise<Account | null> => {
+    logger.debug(`[GetAccount] ${JSON.stringify(req.body)}`);
     const email: string = req.body._session.email;
-    logger.debug(`[Account] query: ${JSON.stringify(email)}`);
     return await service.getAccountByEmail(email);
   }),
 }

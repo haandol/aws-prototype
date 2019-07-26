@@ -47,11 +47,11 @@ const checkAuthority = (req: restify.Request, res: restify.Response, next: resti
 };
 
 async function init() {
-  server.use(checkAuthority);
-  server.post('/alarm', routes.setAlarm);
-  server.del('/alarm', routes.deleteAlarm);
-  server.get('/product', routes.getProduct);
-  server.post('/products', routes.listProducts);
+  server.get('/', routes.healthcheck);
+  server.post('/alarm', checkAuthority, routes.setAlarm);
+  server.del('/alarm', checkAuthority, routes.deleteAlarm);
+  server.get('/product', checkAuthority, routes.getProduct);
+  server.post('/products', checkAuthority, routes.listProducts);
 }
 
 async function main() {
