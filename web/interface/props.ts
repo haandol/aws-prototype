@@ -1,4 +1,4 @@
-import { IProduct, IProgram } from "./interface";
+import { IProduct, IProgram } from './interface';
 
 export interface InitialProps {
   [key: string]: any;

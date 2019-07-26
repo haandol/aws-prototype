@@ -2,7 +2,9 @@ FROM node:10.16
 
 WORKDIR /app
 
-ENV PG_HOST=authdb.cggrl7pirkvu.ap-northeast-2.rds.amazonaws.com
+ARG RDS
+
+ENV PG_HOST=${RDS}
 ENV PG_PORT=5432
 ENV CLIENT_ID='clientId'
 ENV SECRET_KEY='secretKey'

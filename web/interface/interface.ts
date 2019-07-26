@@ -7,7 +7,7 @@ export interface IProduct {
   name: string;
   price: number;
   img: string;
-  live?: string;
+  live: string;
 }
 
 export interface IProgram {
