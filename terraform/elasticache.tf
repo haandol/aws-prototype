@@ -7,7 +7,3 @@ resource "aws_elasticache_cluster" "redis_cluster" {
   parameter_group_name = "default.redis5.0"
   port = 6379
 }
-
-output "redis_public_address" {
-  value = "${aws_elasticache_cluster.redis_cluster.cache_nodes.0.address}"
-}

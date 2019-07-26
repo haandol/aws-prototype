@@ -445,11 +445,3 @@ EOF
 $util.toJson($context.result)
 EOF
 }
-
-output "graphql_api_uris" {
-  value = "${aws_appsync_graphql_api.product_graphql_api.uris}"
-}
-
-output "graphql_api_key" {
-  value = "${aws_appsync_api_key.product_api_key.key}"
-}

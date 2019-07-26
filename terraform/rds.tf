@@ -32,7 +32,3 @@ resource "aws_security_group" "authdb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
-
-output "authdb_public_address" {
-  value = "${aws_db_instance.authdb.address}"
-}
