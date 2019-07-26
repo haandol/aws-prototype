@@ -1,5 +1,5 @@
 import axios from 'axios';
-// import moment from 'moment';
+import moment from 'moment';
 import Program from '../components/Program';
 import { IProgram } from '../interface/interface';
 import { IndexProps } from '../interface/props';
@@ -34,8 +34,7 @@ Index.getInitialProps = async() => {
   }
 
   const programs = [];
-  // const today = moment().format('YYYYMMDD');
-  const today = 20190725;
+  const today = moment().format('YYYYMMDD');
   try {
     const res = await axios({
       method: 'post',

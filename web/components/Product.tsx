@@ -14,7 +14,7 @@ const Product = (props: ProductProps) => {
   const email = localStorage.getItem('email');
   if (!email) {
     alert('No email on localStorage');
-    return;
+    return (<div>No email on localStorage</div>);
   }
 
   return (
