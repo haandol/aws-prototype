@@ -71,3 +71,4 @@ crawlers/gs
 apps/*/build/
 terraform/.terraform.tfstate.lock.info
 *.pyc
+*/build/

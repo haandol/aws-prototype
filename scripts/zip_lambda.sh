@@ -1,15 +1,14 @@
 #!/bin/bash
 
-pushd $PWD
-
 BASEDIR=$(dirname "$0")
-cd $BASEDIR
 
 SHOP="gs"
-SERVICES="alarms alarms"
+SERVICES="crawlers alarms"
 
 for SERVICE in $SERVICES; do
-  cd ../$SERVICE
+  pushd $PWD
+
+  cd $BASEDIR/../$SERVICE
 
   if [ ! -d build ]; then
     mkdir build
@@ -22,8 +21,7 @@ for SERVICE in $SERVICES; do
   chmod 644 $(find . -type f)
   chmod 755 $(find . -type d)
   zip -r9 ../$SHOP.zip .
+  chmod 664 ../$SHOP.zip
 
-  cd ../..
+  popd
 done;
-
-popd
