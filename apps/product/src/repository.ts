@@ -6,6 +6,23 @@ import { Alarm, Product } from './interface';
 API.configure(config);
 
 class Repository {
+  async listAlarms(input: {[key: string]: any}): Promise<Alarm[]> {
+    const query = `query listAlarms (
+      $filter: TableAlarmFilterInput
+) {
+  listAlarms(filter: $filter) {
+    items {
+      user_id
+      product_id
+      is_send
+    }
+  }
+}`;
+    const filter = _.omit(input, ['_session']);
+    const alarms = await API.graphql(graphqlOperation(query, { filter }));
+    return <Alarm[]>alarms;
+  }
+
   async setAlarm(userId: string, productId: string, shop: string): Promise<Alarm> {
     const product = await this.getProduct(productId, shop);
     if (!product) {
@@ -34,6 +51,7 @@ class Repository {
   deleteAlarm(input: $input) {
     user_id
     product_id
+    is_send
   }
 }`;
     const input = {user_id: userId, product_id: productId};

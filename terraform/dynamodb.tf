@@ -73,11 +73,25 @@ resource "aws_dynamodb_table" "alarm_table" {
     type = "S"
   }
 
+  attribute {
+    name = "is_send"
+    type = "N"
+  }
+
   global_secondary_index {
     hash_key = "user_id"
     name = "ProductIdIndex"
-    projection_type = "ALL"
+    projection_type = "KEYS_ONLY"
     range_key = "product_id"
+    read_capacity = 0
+    write_capacity = 0
+  }
+
+  global_secondary_index {
+    hash_key = "user_id"
+    name = "IsSendIndex"
+    projection_type = "KEYS_ONLY"
+    range_key = "is_send"
     read_capacity = 0
     write_capacity = 0
   }

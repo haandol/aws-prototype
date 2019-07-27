@@ -16,6 +16,10 @@ class Service {
     return await this.repository.deleteAalrm(userId, productId);
   }
 
+  async listAlarms(input: {[key: string]: any}): Promise<Alarm[]> {
+    return await this.repository.listAlarms(input);
+  }
+
   async getProduct(id: string, shop: string): Promise<Product> {
     return await this.repository.getProduct(id, shop);
   }

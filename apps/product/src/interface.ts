@@ -12,6 +12,7 @@ export interface Product {
 export interface Alarm {
   user_id: string;
   product_id: string;
+  is_send: number;
 }
 
 export interface Token {

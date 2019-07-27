@@ -27,6 +27,10 @@ export default {
     logger.debug(`[Healthcheck] ${JSON.stringify(req.query)}`);
     return;
   }),
+  listAlarms: responder(async (req): Promise<Alarm[]> => {
+    logger.debug(`[ListAlarms] ${JSON.stringify(req.body)}`);
+    return await service.listAlarms(req.body);
+  }),
   setAlarm: responder(async (req): Promise<Alarm> => {
     logger.debug(`[SetAlarm] ${JSON.stringify(req.body)}`);
     const email = req.body._session.email;

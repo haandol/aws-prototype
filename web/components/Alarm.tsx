@@ -56,7 +56,7 @@ class Alarm extends React.Component<IProps, IState> {
       <div className="alarm">
         <button onClick={this._onSetAlarm}>알람설정</button>
         <button onClick={this._onUnsetAlarm}>알람해제</button>
-      </div >
+      </div>
     );
   }
 }

@@ -58,6 +58,7 @@ type Product {
 type Alarm {
   user_id: String!
   product_id: String!
+  is_send: Int
 }
 
 type ProductConnection {
@@ -77,9 +78,10 @@ type Query {
 	queryProductsByToAtIndex(id: String!, first: Int, after: String): ProductConnection
 	queryProductsByFromAtIndex(id: String!, first: Int, after: String): ProductConnection
 
+	getAlarm(user_id: String!, product_id: String!, is_send: Int): Alarm
   listAlarms(filter: TableAlarmFilterInput, limit: Int, nextToken: String): AlarmConnection
-  queryAlarmsByUserId(userId: String!): AlarmConnection
-  queryAlarmsByProductId(productId: String!): AlarmConnection
+  queryAlarmsByUserId(user_id: String!): AlarmConnection
+  queryAlarmsByProductId(product_id: String!): AlarmConnection
 }
 
 input CreateAlarmInput {
@@ -124,6 +126,7 @@ input TableProductFilterInput {
 input TableAlarmFilterInput {
 	user_id: TableStringFilterInput
 	product_id: TableStringFilterInput
+  is_send: TableIntFilterInput
 }
 
 input TableStringFilterInput {
@@ -183,6 +186,7 @@ resource "aws_appsync_resolver" "get_product" {
   "key": {
     "id": $util.dynamodb.toDynamoDBJson($ctx.args.id),
     "shop": $util.dynamodb.toDynamoDBJson($ctx.args.shop),
+    "date": $util.dynamodb.toDynamoDBJson($ctx.args.date),
   },
 }
 EOF
@@ -309,6 +313,29 @@ $util.toJson($context.result)
 EOF
 }
 
+resource "aws_appsync_resolver" "get_alarm" {
+  api_id = "${aws_appsync_graphql_api.product_graphql_api.id}"
+  field = "getAlarm"
+  data_source = "${aws_appsync_datasource.alarm_datasource.name}"
+  type = "Query"
+
+  request_template = <<EOF
+{
+  "version": "2017-02-28",
+  "operation": "GetItem",
+  "key": {
+    "user_id": $util.dynamodb.toDynamoDBJson($ctx.args.user_id),
+    "product_id": $util.dynamodb.toDynamoDBJson($ctx.args.product_id),
+    "is_send": $util.dynamodb.toDynamoDBJson($ctx.args.is_send),
+  },
+}
+EOF
+
+  response_template = <<EOF
+$util.toJson($context.result)
+EOF
+}
+
 resource "aws_appsync_resolver" "list_alarms" {
   api_id = "${aws_appsync_graphql_api.product_graphql_api.id}"
   field = "listAlarms"
@@ -381,7 +408,7 @@ resource "aws_appsync_resolver" "query_alarms_by_product_id" {
       ":product_id": $util.dynamodb.toDynamoDBJson($ctx.args.product_id),
     },
   },
-  "index": "UserIdIndex",
+  "index": "ProductIdIndex",
   "limit": $util.defaultIfNull($ctx.args.first, 20),
   "nextToken": $util.toJson($util.defaultIfNullOrEmpty($ctx.args.after, null)),
   "scanIndexForward": true,
@@ -407,6 +434,7 @@ resource "aws_appsync_resolver" "createAlarm" {
   "key": {
     "user_id": $util.dynamodb.toDynamoDBJson($ctx.args.input.user_id),
     "product_id": $util.dynamodb.toDynamoDBJson($ctx.args.input.product_id),
+    "is_send": 0,
   },
   "attributeValues": $util.dynamodb.toMapValuesJson($ctx.args.input),
   "condition": {
