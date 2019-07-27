@@ -1,6 +1,5 @@
 import re
 import json
-import redis
 import boto3
 import requests
 import traceback
@@ -142,13 +141,6 @@ class GSAgent:
 
         return updated_product_ids
 
-    def update_cache(self, products):
-        client = redis.Redis(
-            host='reids.3kmfwp.0001.apn2.cache.amazonaws.com', port=6379, db=0
-        )
-        for product in products:
-            client.set(product['id'], json.dumps(product.to_item()))
-
 
 class DynamoDB:
     def __init__(self):
@@ -166,10 +158,4 @@ class DynamoDB:
 def handler(event, context):
     agent = GSAgent()
     products = agent.crawl()
-    updated_product_ids = agent.update_products(products)
-    if updated_product_ids:
-        try:
-            agent.update_cache(filter(lambda x: x.id in updated_product_ids, products))
-        except:
-            traceback.print_exc()
-            print('update cache error')
+    agent.update_products(products)

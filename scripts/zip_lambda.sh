@@ -4,18 +4,26 @@ pushd $PWD
 
 BASEDIR=$(dirname "$0")
 cd $BASEDIR
-cd ../crawlers
 
-if [ ! -d "gs" ]; then
-  mkdir gs
-fi
+SHOP="gs"
+SERVICES="alarms alarms"
 
-cp crawler.py gs
-pip install -r requirements.txt -t gs
+for SERVICE in $SERVICES; do
+  cd ../$SERVICE
 
-cd gs
-chmod 644 $(find . -type f)
-chmod 755 $(find . -type d)
-zip -r9 ../gs_crawler.zip .
+  if [ ! -d build ]; then
+    mkdir build
+  fi
+
+  cp $SHOP.py build
+  pip install -r requirements.txt -t build
+
+  cd build
+  chmod 644 $(find . -type f)
+  chmod 755 $(find . -type d)
+  zip -r9 ../$SHOP.zip .
+
+  cd ../..
+done;
 
 popd

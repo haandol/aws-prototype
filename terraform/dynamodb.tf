@@ -81,7 +81,7 @@ resource "aws_dynamodb_table" "alarm_table" {
   global_secondary_index {
     hash_key = "user_id"
     name = "ProductIdIndex"
-    projection_type = "KEYS_ONLY"
+    projection_type = "ALL"
     range_key = "product_id"
     read_capacity = 0
     write_capacity = 0
