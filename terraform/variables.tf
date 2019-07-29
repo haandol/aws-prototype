@@ -1,5 +1,6 @@
 variable "cluster-name" {
-  value = "aws-prototype"
+  type = "string"
+  default = "aws-prototype"
 }
 
 locals {
