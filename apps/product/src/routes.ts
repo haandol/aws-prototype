@@ -27,6 +27,14 @@ export default {
     logger.debug(`[Healthcheck] ${JSON.stringify(req.query)}`);
     return;
   }),
+  getProduct: responder(async (req): Promise<Product> => {
+    logger.debug(`[GetProduct] ${JSON.stringify(req.query)}`);
+    return await service.getProduct(req.query.id, req.query.shop);
+  }),
+  listProducts: responder(async (req): Promise<Product[]> => {
+    logger.debug(`[ListProducts] ${JSON.stringify(req.body)}`);
+    return await service.listProducts(req.body);
+  }),
   listAlarms: responder(async (req): Promise<Alarm[]> => {
     logger.debug(`[ListAlarms] ${JSON.stringify(req.body)}`);
     return await service.listAlarms(req.body);
@@ -41,12 +49,4 @@ export default {
     const email = req.body._session.email;
     return await service.deleteAlarm(email, req.body.product_id);
   }),
-  getProduct: responder(async (req): Promise<Product> => {
-    logger.debug(`[GetProduct] ${JSON.stringify(req.query)}`);
-    return await service.getProduct(req.query.id, req.query.shop);
-  }),
-  listProducts: responder(async (req): Promise<Product[]> => {
-    logger.debug(`[ListProducts] ${JSON.stringify(req.body)}`);
-    return await service.listProducts(req.body);
-  })
 }

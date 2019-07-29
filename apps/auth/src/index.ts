@@ -47,10 +47,10 @@ const checkAuthority = (req: restify.Request, res: restify.Response, next: resti
 };
 
 async function init() {
-  server.post('/', routes.healthcheck);
-  server.post('/signin', routes.signin);
-  server.get('/account', checkAuthority, routes.getAccountByEmail);
-  server.post('/signout', routes.signout);
+  server.get('/auth/health', routes.healthcheck);
+  server.post('/auth/signin', routes.signin);
+  server.get('/auth/account', checkAuthority, routes.getAccountByEmail);
+  server.post('/auth/signout', routes.signout);
 }
 
 async function main() {
