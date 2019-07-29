@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: aws-prototype-ingress
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+  labels:
+    app: aws-prototype-ingress
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /auth/*
+            backend:
+              serviceName: auth-service
+              servicePort: 80
+          - path: /product/*
+            backend:
+              serviceName: product-service
+              servicePort: 80
