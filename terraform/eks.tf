@@ -25,6 +25,7 @@ resource "aws_subnet" "aws-prototype" {
     map(
      "Name", "aws-prototype-node",
      "kubernetes.io/cluster/${var.cluster-name}", "shared",
+     "kubernetes.io/role/elb", 1,
     )
   }"
 }

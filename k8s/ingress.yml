@@ -6,17 +6,18 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
   labels:
     app: aws-prototype-ingress
 spec:
   rules:
-    - http:
-        paths:
-          - path: /auth/*
-            backend:
-              serviceName: app-service
-              servicePort: 8001
-          - path: /product/*
-            backend:
-              serviceName: app-service
-              servicePort: 8000
+  - http:
+      paths:
+      - path: /auth
+        backend:
+          serviceName: auth-service
+          servicePort: 80
+      - path: /product
+        backend:
+          serviceName: product-service
+          servicePort: 80

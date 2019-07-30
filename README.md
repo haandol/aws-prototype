@@ -42,9 +42,8 @@ $ terraform output alb_deployment > ../k8s/alb_deployment.yml
 
 ```
 $ cd k8s
-$ kubectl apply -f configmap.yml
-$ kubectl apply -f service.yml
 $ kubectl apply -f aws_auth_configmap.yml
+$ kubectl apply -f service.yml
 $ kubectl apply -f app_configmap.yml
 $ kubectl apply -f rbac-role.yml
 $ kubectl apply -f alb_deployment.yml
