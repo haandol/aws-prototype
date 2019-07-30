@@ -1,13 +1,13 @@
-output "app_config_map" {
-  value = "${local.config_map}"
+output "app_configmap" {
+  value = "${local.app_configmap}"
 }
 
 output "kubeconfig" {
   value = "${local.kubeconfig}"
 }
 
-output "config_map_aws_auth" {
-  value = "${local.config_map_aws_auth}"
+output "aws_auth_configmap" {
+  value = "${local.aws_auth_configmap}"
 }
 
 output "alb_deployment" {

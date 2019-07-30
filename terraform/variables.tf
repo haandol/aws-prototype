@@ -4,7 +4,7 @@ variable "cluster-name" {
 }
 
 locals {
-  config_map = <<CONFIGMAP
+  app_configmap = <<APPCONFIGMAP
 
 
 apiVersion: v1
@@ -16,7 +16,7 @@ data:
   AWS_APPSYNC_GRAPHQL_ENDPOINT: ${aws_appsync_graphql_api.product_graphql_api.uris.GRAPHQL}
   AWS_APPSYNC_APIKEY: ${aws_appsync_api_key.product_api_key.key}
   PG_HOST: ${aws_db_instance.authdb.address}
-CONFIGMAP
+APPCONFIGMAP
 }
 
 locals {
@@ -51,7 +51,7 @@ KUBECONFIG
 }
 
 locals {
-  config_map_aws_auth = <<CONFIGMAPAWSAUTH
+  aws_auth_configmap = <<AWSAUTHCONFIGMAP
 
 
 apiVersion: v1
@@ -66,7 +66,7 @@ data:
       groups:
         - system:bootstrappers
         - system:nodes
-CONFIGMAPAWSAUTH
+AWSAUTHCONFIGMAP
 }
 
 locals {

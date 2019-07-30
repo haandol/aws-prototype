@@ -14,9 +14,9 @@ spec:
         paths:
           - path: /auth/*
             backend:
-              serviceName: auth-service
-              servicePort: 80
+              serviceName: app-service
+              servicePort: 8001
           - path: /product/*
             backend:
-              serviceName: product-service
-              servicePort: 80
+              serviceName: app-service
+              servicePort: 8000
