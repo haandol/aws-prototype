@@ -4,6 +4,7 @@ metadata:
   name: aws-prototype-ingress
   namespace: default
   annotations:
+    kubernetes.io/role/elb: 1
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
@@ -20,4 +21,8 @@ spec:
       - path: /product
         backend:
           serviceName: product-service
+          servicePort: 80
+      - path: /
+        backend:
+          serviceName: web-service
           servicePort: 80

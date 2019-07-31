@@ -25,3 +25,17 @@ spec:
     targetPort: 8000
   selector:
     app: product
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service
+  labels:
+    app: web
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 3000
+  selector:
+    app: web

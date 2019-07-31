@@ -29,25 +29,15 @@ init rds table
 $ node apps/auth/scripts/create_tables.js
 ```
 
-config k8s
+generate k8s yml
 ```
-$ cd terraform
-$ terraform output kubeconfig > ~/.kube/config
-$ terraform output aws_auth_configmap > ../k8s/aws_auth_configmap.yml
-$ terraform output app_configmap > ../k8s/app_configmap.yml
-$ terraform output alb_deployment > ../k8s/alb_deployment.yml
+$ ./scripts/generate_yml.sh
 ```
 
 # Setup EKS Cluster
 
 ```
-$ cd k8s
-$ kubectl apply -f aws_auth_configmap.yml
-$ kubectl apply -f service.yml
-$ kubectl apply -f app_configmap.yml
-$ kubectl apply -f rbac-role.yml
-$ kubectl apply -f alb_deployment.yml
-$ kubectl apply -f ingress.yml
+$ ./scripts/apply_config_yml.sh
 ```
 
 # Run Service
