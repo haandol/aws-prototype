@@ -2,9 +2,6 @@ FROM node:10.16
 
 WORKDIR /app
 
-ARG RDS
-
-ENV PG_HOST=${RDS}
 ENV PG_PORT=5432
 ENV CLIENT_ID='clientId'
 ENV SECRET_KEY='secretKey'
