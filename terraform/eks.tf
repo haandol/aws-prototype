@@ -261,11 +261,13 @@ resource "aws_launch_configuration" "aws-prototype" {
 }
 
 resource "aws_autoscaling_group" "aws-prototype" {
-  desired_capacity     = 2
+  desired_capacity     = 3
   launch_configuration = "${aws_launch_configuration.aws-prototype.id}"
-  max_size             = 2
-  min_size             = 1
+  max_size             = 5
+  min_size             = 3
   name                 = "aws-prototype"
+  health_check_type    = "ELB"
+  force_delete         = true
   vpc_zone_identifier  = "${aws_subnet.aws-prototype.*.id}"
 
   tag {
