@@ -3,7 +3,7 @@ resource "aws_lambda_function" "gs_crawler" {
   function_name = "gs_crawler"
   handler = "gs.handler"
   runtime = "python3.7"
-  filename = "../alarms/gs.zip"
+  filename = "../crawlers/gs.zip"
   timeout = 60
   source_code_hash = filebase64sha256("../crawlers/gs.zip")
 }
