@@ -48,8 +48,8 @@ Index.getInitialProps = async() => {
       responseType: 'json',
     });
 
-    const products = res.data.data.data.listProducts.items;
-    console.debug(`products: ${JSON.stringify(products)}`);
+    const products = res.data.data;
+    console.log(`products: ${products.length}`);
     programs.push({
       date: today,
       products,
