@@ -13,7 +13,8 @@ metadata:
     app: aws-prototype
 spec:
   rules:
-  - http:
+  - host: www.haandol.com
+    http:
       paths:
       - path: /auth/*
         backend:
