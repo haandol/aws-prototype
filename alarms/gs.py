@@ -1,4 +1,5 @@
 import boto3
+import pytz
 import requests
 from datetime import datetime
 from boto3.dynamodb.conditions import Attr
@@ -150,7 +151,7 @@ class DynamoDB:
 def handler(event, context):
     res = {}
     agent = Agent()
-    now = datetime.now()
+    now = datetime.now(pytz.timezone('Asia/Seoul'))
     today = now.strftime('%Y%m%d') 
     now_time = now.strftime('%H%M') 
     products = agent.fetch_products(int(today), int(now_time))
@@ -161,7 +162,7 @@ def handler(event, context):
     logger.info('get products: {}'.format(len(products)))
     for product in products:
         alarms = agent.fetch_alarms(product)
-        logger.info('send alarms: {}'.format(len(alarms)))
+        logger.info('send alarms: {} - {}'.format(product['id'], len(alarms)))
         if alarms:
             agent.send_alarm(client,
                              product,

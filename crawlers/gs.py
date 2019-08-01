@@ -1,5 +1,6 @@
 import re
 import json
+import pytz
 import boto3
 import requests
 import traceback
@@ -121,7 +122,7 @@ class GSAgent:
         return products
 
     def crawl(self):
-        today = datetime.now().strftime('%Y%m%d') 
+        today = datetime.now(pytz.timezone('Asia/Seoul')).strftime('%Y%m%d') 
         response = self._fetch(today)
         return self._parse(response, today)
 
