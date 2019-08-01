@@ -1,6 +1,5 @@
 import React from 'react';
 import axios from 'axios';
-import config from '../config';
 
 interface IProps {
   userId: string;
@@ -22,7 +21,7 @@ class Alarm extends React.Component<IProps, IState> {
 
       const res: any = await axios({
         method: 'post',
-        url: config.PRODUCT_URL + '/alarm',
+        url: process.env.PRODUCT_URL + '/alarm',
         data: {
           userId: props.userId,
           productId: props.productId,
@@ -38,7 +37,7 @@ class Alarm extends React.Component<IProps, IState> {
       e.preventDefault();
       const res: any = await axios({
         method: 'delete',
-        url: config.PRODUCT_URL + '/alarm',
+        url: process.env.PRODUCT_URL + '/alarm',
         data: {
           userId: props.userId,
           productId: props.productId,

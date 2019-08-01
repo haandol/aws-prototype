@@ -1,6 +1,5 @@
 import React from 'react';
 import axios from 'axios';
-import config from '../config';
 import Layout from '../components/Layout';
 import Router from 'next/router';
 
@@ -38,7 +37,7 @@ class Signin extends React.Component<IProps, IState> {
       try {
         const res: any = await axios({
           method: 'post',
-          url: config.AUTH_URL + '/signin',
+          url: process.env.AUTH_URL + '/signin',
           data: {
             email: email,
             password: password,
