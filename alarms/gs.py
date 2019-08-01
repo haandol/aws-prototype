@@ -3,6 +3,9 @@ import requests
 from datetime import datetime
 from boto3.dynamodb.conditions import Attr
 from botocore.exceptions import ClientError
+import logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 
 BEFORE_MINUTES = 60     # alarm
@@ -49,7 +52,9 @@ class Agent:
         )
         products = response['Items']
         for product in products:
-            print(product['id'], product['from_at'], product['to_at'])
+            logger.info('{}, {}, {}'.format(
+                product['id'], product['from_at'], product['to_at']
+            ))
         return products
     
     def fetch_alarms(self, product):
@@ -75,7 +80,7 @@ class Agent:
         )
 
     def send_alarm(self, client, product, recipients):
-        print('send_alarm to : ', recipients)
+        logger.info('send_alarm to : {}'.format(recipients))
 
         def generate_subject(product):
             return '[HsChart] 1-hour notice to live ({})'.format(
@@ -119,10 +124,9 @@ class Agent:
             )
         # Display an error if something goes wrong.	
         except ClientError as e:
-            print(e.response['Error']['Message'])
+            logger.error(e.response['Error']['Message'])
         else:
-            print("Email sent! Message ID:"),
-            print(response['MessageId'])
+            logger.info('Email sent! Message ID: {}'.format(response['MessageId']))
         
         for user_id in recipients:
             self.mark_sent(user_id, product['id'])
@@ -154,17 +158,13 @@ def handler(event, context):
         return res
 
     client = boto3.client('ses', region_name='us-west-2')
-    print('get products: ', len(products))
+    logger.info('get products: {}'.format(len(products)))
     for product in products:
         alarms = agent.fetch_alarms(product)
-        print('send alarms: ', len(alarms))
+        logger.info('send alarms: {}'.format(len(alarms)))
         if alarms:
             agent.send_alarm(client,
                              product,
                              list(map(lambda x: x['user_id'], alarms)))
         res[product['id']] = len(alarms)
     return res
-
-
-if __name__ == '__main__':
-    handler(None, None)

@@ -7,6 +7,9 @@ from botocore.exceptions import ClientError
 from decimal import Decimal
 from datetime import datetime
 from bs4 import BeautifulSoup
+import logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 
 class Product:
@@ -57,7 +60,7 @@ class Product:
         fields = ['id', 'date', 'from_at', 'to_at', 'price', 'name', 'link', 'img']
         for field in fields:
             if getattr(self, field) != getattr(other, field):
-                print(getattr(self, field),  getattr(other, field))
+                logger.info('{}, {}'.format(getattr(self, field),  getattr(other, field)))
                 return False
         return True
  
@@ -158,8 +161,4 @@ class DynamoDB:
 def handler(event, context):
     agent = GSAgent()
     products = agent.crawl()
-    print(len(agent.update_products(products)))
-
-
-if __name__ == '__main__':
-    handler(None, None)
+    logger.info(len(agent.update_products(products)))
