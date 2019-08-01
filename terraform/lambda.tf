@@ -4,7 +4,7 @@ resource "aws_lambda_function" "gs_crawler" {
   handler = "gs.handler"
   runtime = "python3.7"
   filename = "../crawlers/gs.zip"
-  timeout = 60
+  timeout = 30
   source_code_hash = filebase64sha256("../crawlers/gs.zip")
 }
 
@@ -73,7 +73,7 @@ resource "aws_lambda_function" "gs_alarm" {
   handler = "gs.handler"
   runtime = "python3.7"
   filename = "../alarms/gs.zip"
-  timeout = 60
+  timeout = 30
   source_code_hash = filebase64sha256("../alarms/gs.zip")
 }
 
@@ -92,7 +92,7 @@ resource "aws_lambda_permission" "allow_cloudwatch_to_call_alarm" {
 }
 
 resource "aws_iam_role_policy" "dynamodb_alarm_table_policy"{
-  name = "dynamodb_alarm_table_polity"
+  name = "dynamodb_alarm_table_policy"
   role = "${aws_iam_role.lambda_exec_role.id}"
   policy = <<EOF
 {
@@ -104,6 +104,29 @@ resource "aws_iam_role_policy" "dynamodb_alarm_table_policy"{
         "dynamodb:*"
       ],
       "Resource": "${aws_dynamodb_table.alarm_table.arn}"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "ses_send_mail_policy"{
+  name = "ses_send_mail_policy"
+  role = "${aws_iam_role.lambda_exec_role.id}"
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+        "ses:SendEmail",
+        "ses:SendRawEmail"
+      ],
+      "Resource": "*"
     }
   ]
 }
