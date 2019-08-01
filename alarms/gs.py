@@ -8,7 +8,6 @@ from botocore.exceptions import ClientError
 BEFORE_MINUTES = 60     # alarm
 
 SENDER = 'Vincent Lee <ldg55d@gmail.com>'
-AWS_REGION = 'ap-northeast-2'
 CHARSET = "UTF-8"
 
 
@@ -142,6 +141,7 @@ def handler(event, context):
     print('get products: ', len(products))
     for product in products:
         alarms = agent.fetch_alarms(product)
+        print('send alarms: ', len(alarms))
         if alarms:
             agent.send_alarm(client,
                              product,

@@ -104,7 +104,7 @@ class Repository {
 }`;
     const filter = _.omit(input, ['_session']);
     const products = await API.graphql(graphqlOperation(query, { filter }));
-    return <Product[]>products;
+    return <Product[]>_.sortBy(products, ['from_at', 'to_at']);
   }
 }
 

@@ -433,7 +433,7 @@ resource "aws_appsync_resolver" "createAlarm" {
   "key": {
     "user_id": $util.dynamodb.toDynamoDBJson($ctx.args.input.user_id),
     "product_id": $util.dynamodb.toDynamoDBJson($ctx.args.input.product_id),
-    "is_send": 0,
+    "is_send": $util.dynamodb.toDynamoDBJson(0),
   },
   "attributeValues": $util.dynamodb.toMapValuesJson($ctx.args.input),
   "condition": {
