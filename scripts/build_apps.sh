@@ -16,7 +16,8 @@ for APP in $APPS; do
 done;
 
 # ECR
-aws ecr get-login --no-include-email --region ap-northeast-2
+eval $(aws ecr get-login --no-include-email --region ap-northeast-2)
+
 for APP in $APPS; do
   docker tag $APP:latest 348028092597.dkr.ecr.ap-northeast-2.amazonaws.com/$APP:latest
   docker push 348028092597.dkr.ecr.ap-northeast-2.amazonaws.com/$APP:latest
