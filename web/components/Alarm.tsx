@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 
 interface IProps {
+  shop: string;
   userId: string;
   productId: string;
 }
@@ -23,8 +24,7 @@ class Alarm extends React.Component<IProps, IState> {
         method: 'post',
         url: '/product/alarm',
         data: {
-          userId: props.userId,
-          productId: props.productId,
+          product_id: props.productId,
         },
         headers: {
           'authorization': localStorage.getItem('token'),
@@ -42,8 +42,8 @@ class Alarm extends React.Component<IProps, IState> {
         method: 'delete',
         url: '/product/alarm',
         data: {
-          userId: props.userId,
-          productId: props.productId,
+          product_id: props.productId,
+          shop: props.shop,
         },
         headers: {
           'authorization': localStorage.getItem('token'),

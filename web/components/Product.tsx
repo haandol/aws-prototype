@@ -32,7 +32,7 @@ const Product = (props: ProductProps) => {
           <div className="price">{props.item.price}</div>
         </div>
       </div>
-      <Alarm userId={email} productId={props.item.id} />
+      <Alarm shop={props.item.shop} userId={email} productId={props.item.id} />
     </div>
   );
 };
