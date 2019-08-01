@@ -7,7 +7,7 @@ ENV SECRET_KEY='secretKey'
 ENV PORT=8000
 
 COPY . /app
-RUN npm install
+RUN npm install --no-package-lock
 RUN npm run build
 
 EXPOSE 8000
