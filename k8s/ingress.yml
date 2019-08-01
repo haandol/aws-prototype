@@ -6,23 +6,24 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-northeast-2:348028092597:certificate/2c939754-6b8c-420e-8d53-4a597f55f754
+    alb.ingress.kubernetes.io/healthcheck-path: /health
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/certificate-arn: 	arn:aws:acm:ap-northeast-2:348028092597:certificate/12d642aa-29e2-4668-95c5-ce2618b2d539
   labels:
     app: aws-prototype
 spec:
   rules:
   - http:
       paths:
-      - path: /auth
+      - path: /auth/*
         backend:
           serviceName: auth-service
           servicePort: 80
-      - path: /product
+      - path: /product/*
         backend:
           serviceName: product-service
           servicePort: 80
-      - path: /
+      - path: /*
         backend:
           serviceName: web-service
           servicePort: 80

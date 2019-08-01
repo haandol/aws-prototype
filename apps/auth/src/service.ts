@@ -25,7 +25,7 @@ class Service {
 
   _generateAccessToken(email: string): string {
     return jwt.sign(
-        {
+        <any>{
           clientId: CLIENT_ID,
           email: email,
           password: DUMMY_PASS,

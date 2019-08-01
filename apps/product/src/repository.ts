@@ -2,7 +2,9 @@ import * as _ from 'lodash';
 import API, { graphqlOperation } from '@aws-amplify/api';
 import config from './config';
 import { Alarm, Product } from './interface';
+import logger from './logger';
 
+logger.info(`configure AWS API: ${JSON.stringify(config)}`);
 API.configure(config);
 
 class Repository {

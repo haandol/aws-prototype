@@ -47,7 +47,7 @@ const checkAuthority = (req: restify.Request, res: restify.Response, next: resti
 };
 
 async function init() {
-  server.get('/product/health', routes.healthcheck);
+  server.get('/health', routes.healthcheck);
   server.get('/product', checkAuthority, routes.getProduct);
   server.post('/product/list', checkAuthority, routes.listProducts);
   server.post('/product/alarm/list', checkAuthority, routes.listAlarms);

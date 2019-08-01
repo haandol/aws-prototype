@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . /app
 
-RUN npm i --no-package-lock
+RUN npm install --no-package-lock && npm install tsc -g 
 RUN npm run build
 
 EXPOSE 3000

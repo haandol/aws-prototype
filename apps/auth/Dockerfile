@@ -8,8 +8,8 @@ ENV SECRET_KEY='secretKey'
 ENV PORT=8001
 
 COPY . /app
-
-RUN npm i --no-package-lock
+RUN npm install
+RUN npm run build
 
 EXPOSE 8001
 CMD [ "npm", "start" ]

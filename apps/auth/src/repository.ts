@@ -10,6 +10,7 @@ class Repository {
   pool: Pool;
 
   constructor() {
+    logger.info(`Conneting to : ${HOST}:${PORT}`);
     this.pool = new Pool({
       host: HOST,
       port: Number(PORT),
@@ -18,6 +19,7 @@ class Repository {
       password: 'aksekfls123',
       connectionTimeoutMillis: 5000,
     })
+    logger.info(`Connected.`);
   }
 
   async createAccount(email: string, password: string): Promise<Account> {
