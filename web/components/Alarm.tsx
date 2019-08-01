@@ -21,7 +21,7 @@ class Alarm extends React.Component<IProps, IState> {
 
       const res: any = await axios({
         method: 'post',
-        url: process.env.API_URL + '/product/alarm',
+        url: '/product/alarm',
         data: {
           userId: props.userId,
           productId: props.productId,
@@ -37,7 +37,7 @@ class Alarm extends React.Component<IProps, IState> {
       e.preventDefault();
       const res: any = await axios({
         method: 'delete',
-        url: process.env.API_URL + '/product/alarm',
+        url: '/product/alarm',
         data: {
           userId: props.userId,
           productId: props.productId,

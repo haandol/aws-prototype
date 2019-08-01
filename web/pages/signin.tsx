@@ -35,10 +35,9 @@ class Signin extends React.Component<IProps, IState> {
       }
 
       try {
-        console.log(`url: `, process.env.API_URL + '/signin');
         const res: any = await axios({
           method: 'post',
-          url: process.env.API_URL + '/auth/signin',
+          url: '/auth/signin',
           data: {
             email: email,
             password: password,

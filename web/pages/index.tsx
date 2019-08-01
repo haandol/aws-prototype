@@ -37,7 +37,7 @@ Index.getInitialProps = async() => {
   try {
     const res = await axios({
       method: 'post',
-      url: process.env.API_URL + '/product/list',
+      url: '/product/list',
       data: {
         date: {eq: today},
       },
