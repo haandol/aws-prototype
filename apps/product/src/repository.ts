@@ -3,6 +3,7 @@ import API, { graphqlOperation } from '@aws-amplify/api';
 import config from './config';
 import { Alarm, Product } from './interface';
 import logger from './logger';
+import { GraphQLResult } from '@aws-amplify/api/lib/types';
 
 logger.info(`configure AWS API: ${JSON.stringify(config)}`);
 API.configure(config);
@@ -103,8 +104,13 @@ class Repository {
   }
 }`;
     const filter = _.omit(input, ['_session']);
-    const products = await API.graphql(graphqlOperation(query, { filter }));
-    return <Product[]>_.sortBy(products, ['from_at', 'to_at']);
+    const products = <GraphQLResult>(await API.graphql(graphqlOperation(query, { filter })));
+    const data: any = products.data;
+    if (!data || !data.listProducts) {
+      return [];
+    }
+
+    return <Product[]>_.sortBy(data.listProducts.items, ['from_at', 'to_at']);
   }
 }
 
