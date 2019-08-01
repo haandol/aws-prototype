@@ -10,9 +10,8 @@ for SERVICE in $SERVICES; do
 
   cd $BASEDIR/../$SERVICE
 
-  if [ ! -d build ]; then
-    mkdir build
-  fi
+  rm -rf build
+  mkdir build
 
   cp $SHOP.py build
   pip install -r requirements.txt -t build
