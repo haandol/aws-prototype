@@ -16,6 +16,7 @@ data:
   AWS_APPSYNC_GRAPHQL_ENDPOINT: ${aws_appsync_graphql_api.product_graphql_api.uris.GRAPHQL}
   AWS_APPSYNC_APIKEY: ${aws_appsync_api_key.product_api_key.key}
   PG_HOST: ${aws_db_instance.authdb.address}
+  API_URL: "http://14c3dffa-default-awsprotot-e8c5-2125966593.ap-northeast-2.elb.amazonaws.com"
 APPCONFIGMAP
 }
 

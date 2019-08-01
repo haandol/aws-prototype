@@ -3,7 +3,6 @@ import moment from 'moment';
 import Program from '../components/Program';
 import { IProgram } from '../interface/interface';
 import { IndexProps } from '../interface/props';
-import config from '../config';
 import Layout from '../components/Layout';
 
 const Index = (props: IndexProps) => (
@@ -38,7 +37,7 @@ Index.getInitialProps = async() => {
   try {
     const res = await axios({
       method: 'post',
-      url: process.env.PRODUCT_URL + '/product/list',
+      url: process.env.API_URL + '/product/list',
       data: {
         date: {eq: today},
       },
@@ -60,7 +59,5 @@ Index.getInitialProps = async() => {
   }
   return { programs };
 }
-
-console.log(`config: ${JSON.stringify(config)}`);
 
 export default Index;
