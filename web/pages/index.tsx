@@ -38,7 +38,7 @@ Index.getInitialProps = async() => {
   try {
     const res = await axios({
       method: 'post',
-      url: config.PRODUCT_URL + '/products',
+      url: config.PRODUCT_URL + '/product/list',
       data: {
         date: {eq: today},
       },
@@ -60,5 +60,7 @@ Index.getInitialProps = async() => {
   }
   return { programs };
 }
+
+console.log(`config: ${JSON.stringify(config)}`);
 
 export default Index;
