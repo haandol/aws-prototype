@@ -13,8 +13,7 @@ metadata:
     app: aws-prototype
 spec:
   rules:
-  - host: www.whapl.com
-    http:
+  - http:
       paths:
       - path: /auth/*
         backend:
