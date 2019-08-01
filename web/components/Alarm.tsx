@@ -25,6 +25,7 @@ class Alarm extends React.Component<IProps, IState> {
         url: '/product/alarm',
         data: {
           product_id: props.productId,
+          shop: props.shop,
         },
         headers: {
           'authorization': localStorage.getItem('token'),
