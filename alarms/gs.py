@@ -56,10 +56,23 @@ class Agent:
         table = self.db.resource.Table('Alarm')
         response = table.scan(
             IndexName='ProductIdIndex',
-            FilterExpression=Attr('product_id').eq(product['id']),
+            FilterExpression=Attr('product_id').eq(product['id']) & Attr('is_send').eq(0),
         )
         alarms = response['Items']
         return alarms
+
+    def mark_sent(self, user_id, product_id):
+        table = self.db.resource.Table('Alarm')
+        table.update_item(
+            Key={
+                'user_id': user_id,
+                'product_id': product_id
+            },
+            UpdateExpression='SET is_send = :val1',
+            ExpressionAttributeValues = {
+                ':val1': 1
+            }
+        )
 
     def send_alarm(self, client, product, recipients):
         print('send_alarm to : ', recipients)
@@ -110,6 +123,9 @@ class Agent:
         else:
             print("Email sent! Message ID:"),
             print(response['MessageId'])
+        
+        for user_id in recipients:
+            self.mark_sent(user_id, product['id'])
 
 
 class DynamoDB:
