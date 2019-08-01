@@ -158,4 +158,8 @@ class DynamoDB:
 def handler(event, context):
     agent = GSAgent()
     products = agent.crawl()
-    agent.update_products(products)
+    print(len(agent.update_products(products)))
+
+
+if __name__ == '__main__':
+    handler(None, None)

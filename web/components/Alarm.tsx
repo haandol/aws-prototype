@@ -26,6 +26,9 @@ class Alarm extends React.Component<IProps, IState> {
           userId: props.userId,
           productId: props.productId,
         },
+        headers: {
+          'authorization': localStorage.getItem('token'),
+        },
         timeout: 3000,
         responseType: 'json',
       });
@@ -41,6 +44,9 @@ class Alarm extends React.Component<IProps, IState> {
         data: {
           userId: props.userId,
           productId: props.productId,
+        },
+        headers: {
+          'authorization': localStorage.getItem('token'),
         },
         timeout: 3000,
         responseType: 'json',
