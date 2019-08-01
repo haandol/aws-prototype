@@ -49,12 +49,11 @@ spec:
       serviceAccountName: external-dns
       containers:
       - name: external-dns
-#        image: registry.opensource.zalan.do/teapot/external-dns:v0.5.9
-        image: registry.opensource.zalan.do/teapot/external-dns:latest
+        image: registry.opensource.zalan.do/teapot/external-dns:v0.5.9
         args:
         - --source=service
         - --source=ingress
-        - --domain-filter=whapl.com
+        - --domain-filter=haandol.com
         - --provider=aws
         - --policy=upsert-only
         - --aws-zone-type=public
