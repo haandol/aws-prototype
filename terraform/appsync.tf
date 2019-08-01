@@ -72,7 +72,7 @@ type AlarmConnection {
 }
 
 type Query {
-	getProduct(id: String!, shop: String!, date: Int): Product
+	getProduct(id: String!, shop: String!): Product
 	listProducts(filter: TableProductFilterInput, limit: Int, nextToken: String): ProductConnection
   queryProductsByDateIndex(id: String!, first: Int, after: String): ProductConnection
 	queryProductsByToAtIndex(id: String!, first: Int, after: String): ProductConnection
@@ -186,7 +186,6 @@ resource "aws_appsync_resolver" "get_product" {
   "key": {
     "id": $util.dynamodb.toDynamoDBJson($ctx.args.id),
     "shop": $util.dynamodb.toDynamoDBJson($ctx.args.shop),
-    "date": $util.dynamodb.toDynamoDBJson($ctx.args.date),
   },
 }
 EOF
