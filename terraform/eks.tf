@@ -150,6 +150,35 @@ resource "aws_iam_role" "aws-prototype-node" {
 POLICY
 }
 
+resource "aws_iam_policy" "external-dns-policy" {
+  name = "K8sExternalDNSPolicy"
+  path = "/"
+  description = "Allows EKS nodes to modify Route53 to support ExternalDNS."
+
+  policy = <<POLICY
+{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": [
+          "route53:ListHostedZones",
+          "route53:ListResourceRecordSets"
+        ],
+        "Resource": ["*"]
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+          "route53:ChangeResourceRecordSets"
+        ],
+        "Resource": ["arn:aws:route53:::hostedzone/*"]
+      }
+  ]
+}
+POLICY
+}
+
 resource "aws_iam_role_policy_attachment" "aws-prototype-node-AmazonEKSWorkerNodePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
   role       = "${aws_iam_role.aws-prototype-node.name}"
@@ -162,6 +191,11 @@ resource "aws_iam_role_policy_attachment" "aws-prototype-node-AmazonEKS_CNI_Poli
 
 resource "aws_iam_role_policy_attachment" "aws-prototype-node-AmazonEC2ContainerRegistryReadOnly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  role       = "${aws_iam_role.aws-prototype-node.name}"
+}
+
+resource "aws_iam_role_policy_attachment" "aws-prototype-node-Route53Policy" {
+  policy_arn = "${aws_iam_policy.external-dns-policy.arn}"
   role       = "${aws_iam_role.aws-prototype-node.name}"
 }
 
