@@ -5,7 +5,7 @@ aws-prototype
 
 - Python 3.5.x+
 - Node 10.16.x+
-- Trraform
+- Terraform
 - Aws-iam-authenticator
 - Kubectl
 
