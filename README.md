@@ -62,6 +62,6 @@ $ terraform desctroy -auto-approve
 $ cd ..
 ```
 
-If it failed to destroy vpc, it probably because of the ALB. ALB is created by EKS not terraform which is allocated to VPC and it prevent destroy it.
+If it failed to destroy vpc, it probably because of the ALB. ALB is created by EKS not terraform which is allocated to VPC and it prevent destroy VPC related resources.
 
 In that case, you should login to AWS console and delete ALB at EC2 menu and try destroy again, or just delete ALB and VPC which are named `aws-prototype` and call destroy again.
