@@ -12,6 +12,8 @@ Install kubectl
 
 # Config
 
+(Optional) modify `provider.tf` because it costs me a lot...
+
 lambda packing
 ```
 $ ./scripts/zip_lambda.sh
