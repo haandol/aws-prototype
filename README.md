@@ -3,12 +3,11 @@ aws-prototype
 
 # Installation
 
-Python 3.5.x+
-Node 10.16.x+
-
-Install terraform
-Install aws-iam-authenticator
-Install kubectl
+- Python 3.5.x+
+- Node 10.16.x+
+- Trraform
+- Aws-iam-authenticator
+- Kubectl
 
 # Config
 
