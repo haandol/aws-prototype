@@ -24,6 +24,7 @@ run infra
 $ cd terraform
 $ terraform init
 $ terraform apply -auto-aprove
+$ cd ..
 ```
 
 init rds table
@@ -51,4 +52,16 @@ $ kubectl apply -f deployment.yml
 # Test
 ```
 $ kubectl get ing
+$ open www.haandol.com
 ```
+
+# Destroy resources
+```
+$ ./scripts/clean_slate.sh
+$ cd terraform
+$ terraform desctroy -auto-approve
+$ cd ..
+```
+
+if it failed to destroy vpc, it probably because of the ALB. ALB is created by EKS not terraform which is allocated to VPC and it prevent destroy it.
+in that case, you should login to AWS console and delete ALB at EC2 menu and try destroy again. or just delete ALB and VPC which are named `aws-prototype` and call destroy again.
