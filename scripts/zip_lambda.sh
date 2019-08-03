@@ -3,7 +3,7 @@
 BASEDIR=$(dirname "$0")
 
 SHOP="gs"
-SERVICES="crawlers alarms"
+SERVICES="crawlers alarms consumers"
 
 for SERVICE in $SERVICES; do
   pushd $PWD

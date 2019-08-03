@@ -1,18 +1,14 @@
-import boto3
+import json
 import pytz
-import requests
+import boto3
 from datetime import datetime
 from boto3.dynamodb.conditions import Attr
-from botocore.exceptions import ClientError
 import logging
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 
 BEFORE_MINUTES = 60     # alarm
-
-SENDER = 'Vincent Lee <ldg55d@gmail.com>'
-CHARSET = "UTF-8"
 
 
 def add_minutes(now, d):
@@ -67,70 +63,19 @@ class Agent:
         alarms = response['Items']
         return alarms
 
-    def mark_sent(self, user_id, product_id):
-        table = self.db.resource.Table('Alarm')
-        table.update_item(
-            Key={
-                'user_id': user_id,
-                'product_id': product_id
-            },
-            UpdateExpression='SET is_send = :val1',
-            ExpressionAttributeValues = {
-                ':val1': 1
-            }
-        )
-
-    def send_alarm(self, client, product, recipients):
-        logger.info('send_alarm to : {}'.format(recipients))
-
-        def generate_subject(product):
-            return '[HsChart] 1-hour notice to live ({})'.format(
-                product['name']
-            )
-
-        def generate_body(product):
-            return '''
-            <html>
-            <body>
-                <div><a href="{}">{}</a></div>
-                <div>schedule: <strong>{} ~ {}</strong></div>
-                <div>price: <strong>{}</strong></div>
-            </body>
-            </html>'''.format(
-                product['link'],
-                product['name'],
-                product['from_at'],
-                product['to_at'],
-                product['price']
-            )
-
-        try:
-            response = client.send_email(
-                Source=SENDER,
-                Destination={
-                    'ToAddresses': recipients,
-                },
-                Message={
-                    'Subject': {
-                        'Charset': CHARSET,
-                        'Data': generate_subject(product),
-                    },
-                    'Body': {
-                        'Html': {
-                            'Charset': CHARSET,
-                            'Data': generate_body(product),
-                        },
-                    },
-                },
-            )
-        # Display an error if something goes wrong.	
-        except ClientError as e:
-            logger.error(e.response['Error']['Message'])
-        else:
-            logger.info('Email sent! Message ID: {}'.format(response['MessageId']))
-        
-        for user_id in recipients:
-            self.mark_sent(user_id, product['id'])
+    def dispatch_alarm(self, queue, product, user_ids):
+        Product = {
+            'id': product['id'],
+            'link': product['link'],
+            'name': product['name'],
+            'from_at': int(product['from_at']),
+            'to_at': int(product['to_at']),
+            'price': int(product['price'])
+        }
+        queue.send_message(MessageBody=json.dumps({
+            'product': Product,
+            'user_ids': user_ids
+        }))
 
 
 class DynamoDB:
@@ -149,23 +94,20 @@ class DynamoDB:
 
 
 def handler(event, context):
-    res = {}
     agent = Agent()
     now = datetime.now(pytz.timezone('Asia/Seoul'))
     today = now.strftime('%Y%m%d') 
     now_time = now.strftime('%H%M') 
     products = agent.fetch_products(int(today), int(now_time))
     if not products:
-        return res
+        return
 
-    client = boto3.client('ses', region_name='us-west-2')
+    sqs = boto3.resource('sqs', region_name='ap-northeast-2')
     logger.info('get products: {}'.format(len(products)))
     for product in products:
         alarms = agent.fetch_alarms(product)
-        logger.info('send alarms: {} - {}'.format(product['id'], len(alarms)))
+        logger.info('dispatch alarms: {} - {}'.format(product['id'], len(alarms)))
         if alarms:
-            agent.send_alarm(client,
-                             product,
-                             list(map(lambda x: x['user_id'], alarms)))
-        res[product['id']] = len(alarms)
-    return res
+            agent.dispatch_alarm(sqs.get_queue_by_name(QueueName='alarm_queue'),
+                                 product,
+                                 list(map(lambda x: x['user_id'], alarms)))
