@@ -52,7 +52,7 @@ class Consumer:
                 logger.error(e.response['Error']['Message'])
             else:
                 for user_id in user_ids:
-                    self.mark_sent(product['id'], user_id)
+                    self.mark_sent(user_id, product['id'])
                 message.delete()
                 user_count += len(D['user_ids'])
                 sent_count += 1
