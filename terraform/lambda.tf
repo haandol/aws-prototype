@@ -197,10 +197,9 @@ resource "aws_iam_role_policy" "sqs_policy" {
         "sqs:SendMessage",
         "sqs:ReceiveMessage",
         "sqs:DeleteMessage",
-        "sqs:DeleteMessageBatch",
         "sqs:GetQueueUrl"
       ],
-      "Resource": "arn:aws:sqs:*"
+      "Resource": "*"
     }
   ]
 }
