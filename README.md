@@ -45,7 +45,7 @@ $ ./scripts/apply_config_yml.sh
 # Run Service
 
 ```
-$ kubectl apply -f deployment.yml
+$ kubectl apply -f k8s/deployment.yml
 ```
 
 # Test
