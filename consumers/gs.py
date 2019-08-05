@@ -38,11 +38,11 @@ class Consumer:
         self.queue = sqs.get_queue_by_name(QueueName='alarm_queue')
         self.ses = boto3.client('ses', region_name='us-west-2')
 
-    def consume(self):
+    def consume(self, records):
         user_count = 0
         sent_count = 0
-        for message in self.queue.receive_messages():
-            D = json.loads(message.body)
+        for record in records:
+            D = json.loads(record['body'])
             product = D['product']
             user_ids = D['user_ids']
 
@@ -113,5 +113,5 @@ class DynamoDB:
 
 def handler(event, context):
     consumer = Consumer()
-    sent_count, user_count = consumer.consume()
+    sent_count, user_count = consumer.consume(event['Records'])
     logger.info('#{} messages has delivered to #{} users.'.format(sent_count, user_count))
