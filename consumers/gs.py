@@ -43,9 +43,11 @@ class Consumer:
         sent_count = 0
         for message in self.queue.receive_messages():
             D = json.loads(message.body)
-            logger.info(D)
             product = D['product']
             user_ids = D['user_ids']
+
+            logger.info('product: {}'.format(product))
+            logger.info('user_ids: {}'.format(user_ids))
             try:
                 self.send_alarm(product, user_ids)
             except ClientError as e:
@@ -53,7 +55,6 @@ class Consumer:
             else:
                 for user_id in user_ids:
                     self.mark_sent(user_id, product['id'])
-                message.delete()
                 user_count += len(D['user_ids'])
                 sent_count += 1
 
@@ -113,5 +114,4 @@ class DynamoDB:
 def handler(event, context):
     consumer = Consumer()
     sent_count, user_count = consumer.consume()
-    if sent_count > 0 and user_count > 0:
-        logger.info('#{} messages has delivered to #{} users.'.format(sent_count, user_count))
+    logger.info('#{} messages has delivered to #{} users.'.format(sent_count, user_count))

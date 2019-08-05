@@ -171,8 +171,9 @@ EOF
 # SQS
 resource "aws_sqs_queue" "alarm_queue" {
   name = "alarm_queue"
-  delay_seconds = 10
+  delay_seconds = 1
   max_message_size = 4096
+  visibility_timeout_seconds = 3600
 }
 
 resource "aws_lambda_event_source_mapping" "event_source_mapping" {

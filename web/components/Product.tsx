@@ -6,7 +6,7 @@ import { ProductProps } from '../interface/props';
 const Product = (props: ProductProps) => {
   const now = moment();
   const today: number = parseInt(now.format('YYYYMMDD'));
-  const time: number = parseInt(now.format('km'));
+  const time: number = parseInt(now.format('HHmm'));
   if (props.item.date === today && props.item.from_at <= time && time <= props.item.to_at) {
     props.item.live = 'LIVE';
   }
