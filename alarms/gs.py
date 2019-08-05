@@ -100,6 +100,7 @@ def handler(event, context):
     now_time = now.strftime('%H%M') 
     products = agent.fetch_products(int(today), int(now_time))
     if not products:
+        logger.info('no products to send alarm')
         return
 
     sqs = boto3.resource('sqs', region_name='ap-northeast-2')

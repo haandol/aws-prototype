@@ -55,7 +55,7 @@ resource "aws_lambda_function" "gs_crawler" {
 resource "aws_cloudwatch_event_rule" "every_minute" {
     name = "every-minute"
     description = "Fires every minute"
-    schedule_expression = "rate(2 minutes)"
+    schedule_expression = "rate(1 minute)"
 }
 
 resource "aws_cloudwatch_event_target" "crawl_every_minute" {
