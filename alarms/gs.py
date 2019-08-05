@@ -37,12 +37,12 @@ class Agent:
     
     def fetch_products(self, today, now_time):
         table = self.db.resource.Table('Product')
-        to_at = add_minutes(now_time, BEFORE_MINUTES)
+        from_limit = add_minutes(now_time, BEFORE_MINUTES)
 
         fe = Attr('shop').eq('gs') & \
              Attr('date').eq(today) & \
-             Attr('from_at').gt(now_time) & \
-             Attr('from_at').lte(to_at)
+             Attr('to_at').gt(now_time) & \
+             Attr('from_at').lte(from_limit)
         response = table.scan(
             IndexName='DateIndex',
             FilterExpression=fe,
